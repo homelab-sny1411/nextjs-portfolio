@@ -1,10 +1,22 @@
 import React from 'react';
+import Image from 'next/image';
 
 const Accueil = () => {
     return (
-        <section id="accueil" className="min-h-screen flex flex-col items-center justify-center bg-gray-800 text-white">
-            <h1 className="text-5xl font-bold mb-4">Bienvenue sur mon Portfolio</h1>
-            <p className="text-xl">Je suis un développeur fullstack spécialisé en Next.js</p>
+        <section id="accueil" className="min-h-screen flex flex-col items-center justify-center text-white">
+            <Image
+                src="/images/background.jpg" // Chemin de l'image
+                alt="Background"
+                layout="fill" // Remplit toute la section
+                objectFit="cover" // Comme un background-size: cover
+                quality={85} // Ajuste la qualité de l'image (75 est un bon compromis)
+                priority={true} // Charge l'image en priorité
+                className="z-[-1]" // Place l'image en arrière-plan
+            />
+            <div className="relative z-10 flex flex-col items-center justify-center h-full text-white">
+                <h1 className="text-5xl font-bold">Mattéo Humez</h1>
+                <p className="text-xl">Bienvenue sur mon portfolio !</p>
+            </div>
         </section>
     );
 };
