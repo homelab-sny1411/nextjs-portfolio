@@ -13,7 +13,6 @@ const About = () => {
                     </p>
                 </div>
 
-                {/* Partie droite: Graphique du parcours */}
                 <div className="lg:w-1/2 p-8">
                     <h3 className="text-3xl font-semibold mb-6">Mon parcours</h3>
                     <ul className="space-y-6">
@@ -36,7 +35,6 @@ const About = () => {
                             </div>
                         </li>
 
-                        {/* Stage chez Waigeo */}
                         <li className="flex items-center">
                             <div className="w-1/4 flex justify-center">
                                 <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
@@ -51,7 +49,7 @@ const About = () => {
                             </div>
                             <div className="w-3/4 pl-4">
                                 <h4 className="text-2xl font-semibold">Stage chez Waigeo</h4>
-                                <p className="text-lg">Avril 2023 - Juin 2023</p>
+                                <p className="text-lg">Avril 2024 - Juin 2024</p>
                             </div>
                         </li>
 
@@ -70,7 +68,7 @@ const About = () => {
                             </div>
                             <div className="w-3/4 pl-4">
                                 <h4 className="text-2xl font-semibold">Alternance chez Waigeo</h4>
-                                <p className="text-lg">Septembre 2023 - Actuellement</p>
+                                <p className="text-lg">Septembre 2024 - Actuellement</p>
                             </div>
                         </li>
                     </ul>
