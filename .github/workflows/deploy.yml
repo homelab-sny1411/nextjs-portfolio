@@ -1,0 +1,37 @@
+name: Deploy Next.js App to Raspberry Pi
+
+on:
+  push:
+    branches:
+      - main  # Déclencher le workflow à chaque push sur la branche 'main'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout du code du dépôt GitHub
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # 2. Installer Docker CLI pour builder l'image
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      # 3. Builder l'image Docker avec pnpm
+      - name: Build Docker image
+        run: docker build -t nextjs-portfolio-pnpm .
+
+      # 4. Déployer l'image sur le Raspberry Pi via SSH
+      - name: Deploy to Raspberry Pi
+        uses: appleboy/ssh-action@v0.1.0
+        with:
+          host: ${{ secrets.RPI_HOST }}  # L'adresse IP du Raspberry Pi (à définir dans les secrets GitHub)
+          username: ${{ secrets.RPI_USER }}  # Nom d'utilisateur SSH pour le Raspberry Pi (défini dans les secrets)
+          key: ${{ secrets.SSH_PRIVATE_KEY }}  # La clé privée SSH pour l'accès au Raspberry Pi
+          port: 22
+          script: |
+            docker stop nextjs-app || true  # Arrête le conteneur en cours d'exécution (s'il existe)
+            docker rm nextjs-app || true    # Supprime le conteneur en cours d'exécution (s'il existe)
+            docker pull nextjs-portfolio-pnpm
+            docker run -d -p 3000:3000 --name nextjs-app nextjs-portfolio-pnpm
