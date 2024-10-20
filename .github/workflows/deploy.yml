@@ -27,7 +27,7 @@ jobs:
 
             # Si le projet n'existe pas, cloner le dépôt
             if [ ! -d "nextjs-app" ]; then
-              git clone git@github.com:sny1411/nextjs-portfolio.git nextjs-app
+              git clone https://github.com/sny1411/nextjs-portfolio.git nextjs-app
             fi
 
             # Naviguer vers le répertoire du projet
