@@ -31,7 +31,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}  # La clé privée SSH (définie dans les secrets)
           port: ${{ secrets.RPI_PORT }}  # Utiliser le port SSH défini dans le secret GitHub
           script: |
-            docker stop nextjs-app || true  # Arrêter le conteneur s'il est déjà en cours d'exécution
-            docker rm nextjs-app || true    # Supprimer l'ancien conteneur
-            docker pull nextjs-portfolio-pnpm  # Récupérer la dernière image Docker
-            docker run -d -p 3000:3000 --name nextjs-app nextjs-portfolio-pnpm  # Démarrer le nouveau conteneur
+            sudo docker stop nextjs-app || true  # Arrêter le conteneur s'il est déjà en cours d'exécution
+            sudo docker rm nextjs-app || true    # Supprimer l'ancien conteneur
+            sudo docker pull nextjs-portfolio-pnpm  # Récupérer la dernière image Docker
+            sudo docker run -d -p 3000:3000 --name nextjs-app nextjs-portfolio-pnpm  # Démarrer le nouveau conteneur
