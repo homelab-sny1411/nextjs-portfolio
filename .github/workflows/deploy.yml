@@ -10,28 +10,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Checkout du code du dépôt GitHub
+      # 1. Checkout du code du dépôt GitHub dans l'environnement GitHub Actions
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # 2. Installer Docker CLI pour builder l'image
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      # 3. Builder l'image Docker avec pnpm
-      - name: Build Docker image
-        run: docker build -t nextjs-portfolio-pnpm .
-
-      # 4. Déployer l'image sur le Raspberry Pi via SSH
-      - name: Deploy to Raspberry Pi
+      # 2. Se connecter au Raspberry Pi via SSH et exécuter les commandes
+      - name: Build and deploy on Raspberry Pi
         uses: appleboy/ssh-action@v0.1.0
         with:
-          host: ${{ secrets.RPI_HOST }}  # L'adresse IP du Raspberry Pi (définie dans les secrets GitHub)
-          username: ${{ secrets.RPI_USER }}  # Le nom d'utilisateur SSH (ex. 'pi')
-          key: ${{ secrets.SSH_PRIVATE_KEY }}  # La clé privée SSH (définie dans les secrets)
-          port: ${{ secrets.RPI_PORT }}  # Utiliser le port SSH défini dans le secret GitHub
+          host: ${{ secrets.RPI_HOST }}
+          username: ${{ secrets.RPI_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.RPI_PORT }}
           script: |
-            sudo docker stop nextjs-app || true  # Arrêter le conteneur s'il est déjà en cours d'exécution
-            sudo docker rm nextjs-app || true    # Supprimer l'ancien conteneur
-            sudo docker pull nextjs-portfolio-pnpm  # Récupérer la dernière image Docker
-            sudo docker run -d -p 3000:3000 --name nextjs-app nextjs-portfolio-pnpm  # Démarrer le nouveau conteneur
+            cd /home/sny1411
+
+            # Si le projet n'existe pas, cloner le dépôt
+            if [ ! -d "nextjs-app" ]; then
+              git clone git@github.com:sny1411/nextjs-portfolio.git nextjs-app
+            fi
+
+            # Naviguer vers le répertoire du projet
+            cd nextjs-app
+
+            # Récupérer les dernières modifications du dépôt
+            git pull origin main
+
+            # Arrêter le conteneur s'il est déjà en cours d'exécution
+            sudo docker stop nextjs-app || true
+
+            # Supprimer l'ancien conteneur
+            sudo docker rm nextjs-app || true
+
+            # Construire l'image Docker sur le Raspberry Pi
+            sudo docker build -t nextjs-portfolio-pnpm .
+
+            # Démarrer le nouveau conteneur
+            sudo docker run -d -p 3000:3000 --name nextjs-app nextjs-portfolio-pnpm
