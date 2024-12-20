@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import ScrollIndicator from "@/app/components/scrollIndicator";
 
 const Accueil = () => {
     return (
@@ -17,6 +18,7 @@ const Accueil = () => {
                 <h1 className="text-5xl font-bold">Mattéo Humez</h1>
                 <p className="text-xl">Bienvenue sur mon portfolio !</p>
             </div>
+            <ScrollIndicator />
         </section>
     );
 };

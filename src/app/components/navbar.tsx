@@ -4,7 +4,7 @@ import { Link } from 'react-scroll';
 
 const Navbar = () => {
     return (
-        <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-md text-white px-6 py-2 rounded-full shadow-lg z-50">
+        <nav className="hidden md:fixed md:top-4 md:left-1/2 md:transform md:-translate-x-1/2 md:bg-black/70 md:backdrop-blur-md md:text-white md:px-6 md:py-2 md:rounded-full md:shadow-lg md:z-50 md:block">
             <ul className="flex space-x-8">
                 <li>
                     <Link
