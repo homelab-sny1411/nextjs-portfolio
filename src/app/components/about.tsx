@@ -19,7 +19,7 @@ const About = () => {
                         {/* BUT informatique */}
                         <li className="flex items-center">
                             <div className="w-1/4 flex justify-center">
-                                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
+                                <div className="p-2 w-18 h-18 sm:w-20 sm:h-20 md:w-22 md:h-22 bg-white  aspect-square rounded-full flex items-center justify-center overflow-hidden">
                                     <Image
                                         src="/images/iut-lens-logo.svg"
                                         alt="IUT Lens Logo"
@@ -37,7 +37,7 @@ const About = () => {
 
                         <li className="flex items-center">
                             <div className="w-1/4 flex justify-center">
-                                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
+                                <div className="p-2 w-18 h-18 sm:w-20 sm:h-20 md:w-22 md:h-22 bg-white  aspect-square rounded-full flex items-center justify-center overflow-hidden">
                                     <Image
                                         src="/images/waigeo-logo.svg"
                                         alt="Waigeo Logo"
@@ -56,7 +56,7 @@ const About = () => {
                         {/* Alternance chez Waigeo */}
                         <li className="flex items-center">
                             <div className="w-1/4 flex justify-center">
-                                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center">
+                                <div className="p-2 w-18 h-18 sm:w-20 sm:h-20 md:w-22 md:h-22 bg-white  aspect-square rounded-full flex items-center justify-center overflow-hidden">
                                     <Image
                                         src="/images/waigeo-logo.svg"
                                         alt="Waigeo Logo"
