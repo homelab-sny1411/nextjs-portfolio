@@ -1,3 +1,7 @@
+variable "image" {
+  type    = string
+}
+
 job "portfolio" {
   datacenters = ["homelab"]
   type = "service"
