@@ -24,7 +24,7 @@ jobs:
 
       # Étape 2 : Configurer OpenVPN
       - name: Connect to VPN
-        uses: kota65535/github-openvpn-connect-action@v3.1.
+        uses: kota65535/github-openvpn-connect-action@v3.1.0
         with:
             config_file: ${{ secrets.OVPN_CONFIG }}
             username: ${{ secrets.OVPN_USERNAME }}
