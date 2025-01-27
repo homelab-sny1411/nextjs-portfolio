@@ -30,7 +30,7 @@ jobs:
         run: |
           echo "${{ secrets.OVPN_CONFIG }}" > config.ovpn
           echo "auth-user-pass auth.txt" >> config.ovpn
-          sudo openvpn --config config.ovpn --verb 4
+          sudo openvpn --config config.ovpn --daemon --verb 4
           sleep 10  # Attendre que la connexion soit établie
           sudo cat /var/log/syslog | grep openvpn  # Afficher les logs OpenVPN   
 
