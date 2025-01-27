@@ -3,6 +3,11 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: read    # Permet de lire le contenu du dépôt
+  packages: write   # Permet de pousser des packages dans GHCR
+  id-token: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
