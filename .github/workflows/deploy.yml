@@ -17,11 +17,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Install OpenVPN
+        run: |
+          sudo apt update
+          sudo apt install -y openvpn openvpn-systemd-resolved
+
       # Étape 2 : Configurer OpenVPN
       - name: Connect to VPN
-        uses: kamesh-a/openvpn-connect@v1.0.0
+        uses: kota65535/github-openvpn-connect-action@v3.1.
         with:
-            vpn_config: ${{ secrets.OVPN_CONFIG }}
+            config_file: ${{ secrets.OVPN_CONFIG }}
             username: ${{ secrets.OVPN_USERNAME }}
             password: ${{ secrets.OVPN_PASSWORD }}
 
