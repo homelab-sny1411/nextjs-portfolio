@@ -1,43 +1,36 @@
 name: Build and Deploy Portfolio
+
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 permissions:
-  contents: read    # Permet de lire le contenu du dépôt
-  packages: write   # Permet de pousser des packages dans GHCR
+  contents: read
+  packages: write
   id-token: write
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      # Étape 1 : Cloner le dépôt
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Install OpenVPN
-        run: sudo apt-get update && sudo apt-get install -y openvpn
+      # Étape 2 : Configurer OpenVPN
+      - name: Start OpenVPN
+        uses: zurawiki/openvpn-action@v1
+        with:
+          config: ${{ secrets.OVPN_CONFIG }}
+          username: ${{ secrets.OVPN_USERNAME }}
+          password: ${{ secrets.OVPN_PASSWORD }}
 
-      - name: Verify OpenVPN Version
-        run: openvpn --version
-
-      - name: Setup VPN Authentication File
+      # Étape 3 : Tester la connexion VPN
+      - name: Test VPN Connection
         run: |
-          echo "${{ secrets.OVPN_USERNAME }}" > auth.txt
-          echo "${{ secrets.OVPN_PASSWORD }}" >> auth.txt
-          chmod 600 auth.txt
+          curl -v http://192.168.1.17:4646  # Vérifier l'accès au serveur via le VPN
 
-      - name: Setup VPN
-        run: |
-          echo "${{ secrets.OVPN_CONFIG }}" > config.ovpn
-          echo "auth-user-pass auth.txt" >> config.ovpn
-          sudo openvpn --config config.ovpn --daemon --verb 4
-          sleep 10  # Attendre que la connexion soit établie
-          sudo cat /var/log/syslog | grep openvpn  # Afficher les logs OpenVPN   
-
-      - name: Test VPN connection
-        run: |
-          curl -v http://192.168.1.17:4646  # Vérifier si le serveur Nomad est accessible via le VPN
-
+      # Étape 4 : Connexion à GitHub Container Registry
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
@@ -45,12 +38,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push
+      # Étape 5 : Construire et pousser l'image Docker
+      - name: Build and Push Docker Image
         uses: docker/build-push-action@v4
         with:
+          context: .
           push: true
           tags: ghcr.io/${{ github.repository }}:latest
 
+      # Étape 6 : Déployer avec Nomad
       - name: Deploy to Nomad
         env:
           NOMAD_ADDR: http://192.168.1.17:4646
