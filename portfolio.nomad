@@ -25,7 +25,7 @@ job "portfolio" {
       driver = "docker"
 
       config {
-        image = "${var.image}"
+        image = var.image
         ports = ["http"]
       }
 
