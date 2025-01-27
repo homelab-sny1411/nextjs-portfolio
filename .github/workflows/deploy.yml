@@ -30,14 +30,13 @@ jobs:
         run: |
           echo "${{ secrets.OVPN_CONFIG }}" > config.ovpn
           echo "auth-user-pass auth.txt" >> config.ovpn
-          sudo openvpn --config config.ovpn --daemon --verb 4
+          sudo openvpn --config config.ovpn --verb 4
           sleep 10  # Attendre que la connexion soit établie
           sudo cat /var/log/syslog | grep openvpn  # Afficher les logs OpenVPN   
 
       - name: Test VPN connection
         run: |
           curl -v http://192.168.1.17:4646  # Vérifier si le serveur Nomad est accessible via le VPN
-          ping -c 4 192.168.1.17
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
