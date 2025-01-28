@@ -19,23 +19,62 @@ jobs:
       - name: Install OpenVPN
         run: |
           sudo apt update
-          sudo apt install -y openvpn
+          sudo apt install -y openvpn resolvconf
+
+      - name: Display Network Info Before VPN
+        run: |
+          echo "IP avant connexion VPN:"
+          curl -s ifconfig.me
+          echo "Routes avant VPN:"
+          ip route list
+          echo "Interfaces réseau avant VPN:"
+          ip addr show
 
       - name: Setup VPN config
         run: |
           echo "${{ secrets.OVPN_CONFIG }}" > config.ovpn
           echo "${{ secrets.OVPN_USERNAME }}" > auth.txt
           echo "${{ secrets.OVPN_PASSWORD }}" >> auth.txt
+          sudo chmod 600 config.ovpn auth.txt
 
-      - name: Connect to VPN
+      - name: Connect to VPN with Debug
         run: |
-          sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon
-          sleep 10  # Attendre que la connexion s'établisse
+          # Démarrer OpenVPN avec logging
+          sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon --log vpn.log --verb 4
+          
+          # Attendre et vérifier le statut
+          for i in {1..12}; do
+            if ip addr show tun0 > /dev/null 2>&1; then
+              echo "Interface VPN détectée!"
+              break
+            fi
+            echo "Attente de l'interface VPN... ($i/12)"
+            sleep 5
+          done
+          
+          # Afficher les logs VPN
+          echo "=== Logs OpenVPN ==="
+          sudo cat vpn.log
+          
+          # Vérifier si l'interface existe
+          if ! ip addr show tun0 > /dev/null 2>&1; then
+            echo "Échec de la création de l'interface VPN"
+            exit 1
+          fi
+
+      - name: Display Network Info After VPN
+        run: |
+          echo "IP après connexion VPN:"
+          curl -s ifconfig.me
+          echo "Routes après VPN:"
+          ip route list
+          echo "Interfaces réseau après VPN:"
+          ip addr show
+          echo "Status interface tun0:"
+          ip addr show tun0 || echo "Interface tun0 non trouvée"
 
       - name: Check VPN Connection
         run: |
-          echo "Vérification de l'IP publique:"
-          curl -s ifconfig.me
           echo "Test de connexion au serveur Nomad:"
           curl -v http://192.168.1.17:4646 || exit 1
 
@@ -64,5 +103,5 @@ jobs:
       - name: Cleanup VPN
         if: always()
         run: |
-          sudo pkill openvpn
-          rm -f config.ovpn auth.txt
+          sudo pkill openvpn || true
+          rm -f config.ovpn auth.txt vpn.log
