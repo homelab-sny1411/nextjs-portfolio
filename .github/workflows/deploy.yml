@@ -19,7 +19,7 @@ jobs:
       - name: Install OpenVPN and Network Tools
         run: |
           sudo apt update
-          sudo apt install -y openvpn resolvconf bridge-utils
+          sudo apt install -y openvpn resolvconf bridge-utils isc-dhcp-client
 
       - name: Setup VPN config
         run: |
@@ -30,20 +30,23 @@ jobs:
 
       - name: Connect to VPN
         run: |
-          # Créer et configurer l'interface TAP
+          # Créer l'interface TAP
           sudo ip tuntap add dev tap0 mode tap
           sudo ip link set tap0 up
 
           # Démarrer OpenVPN
-          sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon
+          sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon --verb 4
 
           # Attendre que la connexion s'établisse
           sleep 15
 
-          # Vérifier l'état de l'interface
-          ip addr show tap0
+          # Demander une adresse IP via DHCP
+          sudo dhclient tap0
 
-          # Afficher la table de routage
+          # Vérifier la configuration obtenue
+          echo "=== Configuration IP ==="
+          ip addr show tap0
+          echo "=== Routes ===="
           ip route
 
       - name: Test VPN Connection
@@ -52,6 +55,8 @@ jobs:
           ip addr
           echo "=== Table de routage ==="
           ip route
+          echo "=== Test rasp5 ==="
+          ping -c 4 192.168.1.17
           echo "=== Test Nomad ==="
           curl -v http://192.168.1.17:4646
 
