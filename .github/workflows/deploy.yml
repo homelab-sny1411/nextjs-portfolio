@@ -19,7 +19,16 @@ jobs:
       - name: Install OpenVPN and Network Tools
         run: |
           sudo apt update
-          sudo apt install -y openvpn resolvconf bridge-utils isc-dhcp-client net-tools traceroute
+          sudo apt install -y openvpn resolvconf bridge-utils isc-dhcp-client net-tools
+
+      - name: Display Network Info Before VPN
+        run: |
+          echo "IP avant connexion VPN:"
+          curl -s ifconfig.me
+          echo "Routes avant VPN:"
+          ip route list
+          echo "Interfaces réseau avant VPN:"
+          ip addr show
 
       - name: Setup VPN config
         run: |
@@ -28,61 +37,56 @@ jobs:
           echo "${{ secrets.OVPN_PASSWORD }}" >> auth.txt
           sudo chmod 600 config.ovpn auth.txt
 
-      - name: Connect to VPN and Configure Network
+      - name: Connect to VPN with Debug
         run: |
-          echo "=== Configuration initiale ==="
-          ip route list
-          ip addr show
+          # Démarrer OpenVPN avec logging
+          sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon --log vpn.log --verb 4
           
-          echo "=== Démarrage OpenVPN ==="
-          # Démarrer OpenVPN en premier plan pour voir les logs directement
-          sudo openvpn --config config.ovpn --auth-user-pass auth.txt --log-append /dev/stdout &
-          OPENVPN_PID=$!
-          
-          echo "=== Attente de l'interface TAP ==="
-          for i in {1..30}; do
-            if ip link show tap0 >/dev/null 2>&1; then
-              echo "Interface TAP détectée!"
+          # Attendre et vérifier le statut
+          for i in {1..12}; do
+            if ip addr show tap0 > /dev/null 2>&1; then
+              echo "Interface VPN détectée!"
               break
             fi
-            echo "Attente de l'interface tap0... $i/30"
-            sleep 2
+            echo "Attente de l'interface VPN... ($i/12)"
+            sleep 5
           done
           
-          echo "=== Configuration de l'interface ==="
-          sudo ip link set tap0 up
-          sudo ip addr add 192.168.1.100/24 dev tap0
+          # Afficher les logs VPN
+          echo "=== Logs OpenVPN ==="
+          sudo cat vpn.log
           
-          echo "=== Configuration des routes ==="
-          # Ajouter la route vers le réseau local
-          sudo ip route add 192.168.1.0/24 dev tap0
-          # S'assurer que le trafic vers Nomad passe par le VPN
-          sudo ip route add 192.168.1.17/32 dev tap0
-          
-          echo "=== Status des interfaces ==="
-          ip addr show
-          
-          echo "=== Table de routage ==="
-          ip route list
-          
-          echo "=== Test de connectivité ==="
-          ping -c 2 192.168.1.17 || echo "Ping failed"
-          traceroute 192.168.1.17 || echo "Traceroute failed"
-          
-          echo "=== Processus réseau actifs ==="
-          netstat -rn
-          ps aux | grep openvpn
-          
-          # Vérifier si OpenVPN est toujours en cours d'exécution
-          if ! kill -0 $OPENVPN_PID 2>/dev/null; then
-            echo "OpenVPN process died"
+          # Vérifier si l'interface existe et la configurer
+          if ip addr show tap0 > /dev/null 2>&1; then
+            echo "Configuration de l'interface tap0..."
+            sudo ip link set tap0 up
+            sudo dhclient tap0 || {
+              echo "DHCP failed, trying static configuration..."
+              sudo ip addr add 192.168.1.100/24 dev tap0
+              sudo ip route add 192.168.1.0/24 dev tap0
+            }
+          else
+            echo "Échec de la création de l'interface VPN"
             exit 1
           fi
+
+      - name: Display Network Info After VPN
+        run: |
+          echo "IP après connexion VPN:"
+          curl -s ifconfig.me
+          echo "Routes après VPN:"
+          ip route list
+          echo "Interfaces réseau après VPN:"
+          ip addr show
+          echo "Status interface tap0:"
+          ip addr show tap0 || echo "Interface tap0 non trouvée"
+          echo "Test de connexion locale:"
+          ping -c 4 192.168.1.17 || echo "Ping failed"
 
       - name: Check VPN Connection
         run: |
           echo "Test de connexion au serveur Nomad:"
-          curl -v --connect-timeout 10 http://192.168.1.17:4646 || exit 1
+          curl -v http://192.168.1.17:4646 || exit 1
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
@@ -109,6 +113,6 @@ jobs:
       - name: Cleanup VPN
         if: always()
         run: |
-          sudo ip route del 192.168.1.0/24 dev tap0 || true
+          sudo dhclient -r tap0 || true
           sudo pkill openvpn || true
-          rm -f config.ovpn auth.txt
+          rm -f config.ovpn auth.txt vpn.log
