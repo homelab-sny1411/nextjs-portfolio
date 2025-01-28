@@ -19,16 +19,7 @@ jobs:
       - name: Install OpenVPN and Network Tools
         run: |
           sudo apt update
-          sudo apt install -y openvpn resolvconf bridge-utils isc-dhcp-client net-tools
-
-      - name: Display Network Info Before VPN
-        run: |
-          echo "IP avant connexion VPN:"
-          curl -s ifconfig.me
-          echo "Routes avant VPN:"
-          ip route list
-          echo "Interfaces réseau avant VPN:"
-          ip addr show
+          sudo apt install -y openvpn resolvconf bridge-utils net-tools
 
       - name: Setup VPN config
         run: |
@@ -37,54 +28,47 @@ jobs:
           echo "${{ secrets.OVPN_PASSWORD }}" >> auth.txt
           sudo chmod 600 config.ovpn auth.txt
 
-      - name: Connect to VPN with Debug
+      - name: Connect to VPN and Configure Network
         run: |
-          # Démarrer OpenVPN avec logging
-          sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon --log vpn.log --verb 4
+          echo "=== Routes initiales ==="
+          ip route list
           
-          # Attendre et vérifier le statut
-          for i in {1..12}; do
-            if ip addr show tap0 > /dev/null 2>&1; then
-              echo "Interface VPN détectée!"
+          echo "=== Démarrage OpenVPN ==="
+          sudo openvpn --config config.ovpn --auth-user-pass auth.txt --log-append /dev/stdout &
+          OPENVPN_PID=$!
+          
+          echo "=== Attente de l'interface TAP ==="
+          for i in {1..15}; do
+            if ip link show tap0 >/dev/null 2>&1; then
+              echo "Interface TAP détectée!"
               break
             fi
-            echo "Attente de l'interface VPN... ($i/12)"
-            sleep 5
+            echo "Attente de l'interface tap0... $i/15"
+            sleep 2
           done
           
-          # Afficher les logs VPN
-          echo "=== Logs OpenVPN ==="
-          sudo cat vpn.log
+          echo "=== Configuration de l'interface ==="
+          sudo ip link set tap0 up
+          sudo ip addr add 192.168.1.100/24 dev tap0
           
-          # Vérifier si l'interface existe et la configurer
-          if ip addr show tap0 > /dev/null 2>&1; then
-            echo "Configuration de l'interface tap0..."
-            sudo ip link set tap0 up
-            sudo dhclient tap0 || {
-              echo "DHCP failed, trying static configuration..."
-              sudo ip addr add 192.168.1.100/24 dev tap0
-              sudo ip route add 192.168.1.0/24 dev tap0
-            }
-          else
-            echo "Échec de la création de l'interface VPN"
-            exit 1
-          fi
-
-      - name: Display Network Info After VPN
-        run: |
-          echo "Routes après VPN:"
+          echo "=== Correction des routes ==="
+          # Supprimer la route par défaut existante
+          sudo ip route del default via 10.1.0.1 dev eth0
+          # Ajouter notre route par défaut VPN avec une meilleure métrique
+          sudo ip route add default via 192.168.1.254 metric 50
+          # Ajouter la route spécifique pour le réseau local
+          sudo ip route add 192.168.1.0/24 dev tap0 metric 50
+          
+          echo "=== Nouvelles routes ==="
           ip route list
-          echo "Interfaces réseau après VPN:"
-          ip addr show
-          echo "Status interface tap0:"
-          ip addr show tap0 || echo "Interface tap0 non trouvée"
-          echo "Test de connexion locale:"
-          ping -c 4 192.168.1.17 || echo "Ping failed"
+          
+          echo "=== Test de connectivité ==="
+          ping -c 2 192.168.1.17 || echo "Ping failed"
 
       - name: Check VPN Connection
         run: |
           echo "Test de connexion au serveur Nomad:"
-          curl -v http://192.168.1.17:4646 || exit 1
+          curl -v --connect-timeout 10 http://192.168.1.17:4646 || exit 1
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
@@ -111,6 +95,7 @@ jobs:
       - name: Cleanup VPN
         if: always()
         run: |
-          sudo dhclient -r tap0 || true
+          # Restaurer la route par défaut originale
+          sudo ip route add default via 10.1.0.1 dev eth0 || true
           sudo pkill openvpn || true
-          rm -f config.ovpn auth.txt vpn.log
+          rm -f config.ovpn auth.txt
