@@ -19,7 +19,7 @@ jobs:
       - name: Install OpenVPN
         run: |
           sudo apt update
-          sudo apt install -y openvpn resolvconf
+          sudo apt install -y openvpn resolvconf bridge-utils
 
       - name: Display Network Info Before VPN
         run: |
@@ -44,7 +44,7 @@ jobs:
           
           # Attendre et vérifier le statut
           for i in {1..12}; do
-            if ip addr show tun0 > /dev/null 2>&1; then
+            if ip addr show tap0 > /dev/null 2>&1; then
               echo "Interface VPN détectée!"
               break
             fi
@@ -57,10 +57,14 @@ jobs:
           sudo cat vpn.log
           
           # Vérifier si l'interface existe
-          if ! ip addr show tun0 > /dev/null 2>&1; then
+          if ! ip addr show tap0 > /dev/null 2>&1; then
             echo "Échec de la création de l'interface VPN"
             exit 1
           fi
+          
+          # Configuration de l'interface TAP
+          sudo ip link set tap0 up
+          sudo dhclient -v tap0
 
       - name: Display Network Info After VPN
         run: |
@@ -70,8 +74,10 @@ jobs:
           ip route list
           echo "Interfaces réseau après VPN:"
           ip addr show
-          echo "Status interface tun0:"
-          ip addr show tun0 || echo "Interface tun0 non trouvée"
+          echo "Status interface tap0:"
+          ip addr show tap0 || echo "Interface tap0 non trouvée"
+          echo "Test de connexion locale:"
+          ping -c 4 192.168.1.17
 
       - name: Check VPN Connection
         run: |
@@ -103,5 +109,6 @@ jobs:
       - name: Cleanup VPN
         if: always()
         run: |
+          sudo dhclient -r tap0 || true
           sudo pkill openvpn || true
           rm -f config.ovpn auth.txt vpn.log
