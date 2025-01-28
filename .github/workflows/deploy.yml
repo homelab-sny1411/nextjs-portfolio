@@ -30,40 +30,27 @@ jobs:
 
       - name: Connect to VPN and Configure Network
         run: |
-          echo "=== Routes initiales ==="
-          ip route list
-          
           echo "=== Démarrage OpenVPN ==="
-          sudo openvpn --config config.ovpn --auth-user-pass auth.txt --log-append /dev/stdout &
-          OPENVPN_PID=$!
-          
-          echo "=== Attente de l'interface TAP ==="
-          for i in {1..15}; do
-            if ip link show tap0 >/dev/null 2>&1; then
-              echo "Interface TAP détectée!"
-              break
-            fi
-            echo "Attente de l'interface tap0... $i/15"
-            sleep 2
-          done
-          
+          sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon
+          sleep 15
+
+          echo "=== Vérification de l'interface TAP ==="
+          ip a show tap0 || (echo "Interface tap0 introuvable" && exit 1)
+
           echo "=== Configuration de l'interface ==="
           sudo ip link set tap0 up
-          sudo ip addr add 192.168.1.100/24 dev tap0
-          
+
           echo "=== Correction des routes ==="
-          # Supprimer la route par défaut existante
-          sudo ip route del default via 10.1.0.1 dev eth0
-          # Ajouter notre route par défaut VPN avec une meilleure métrique
-          sudo ip route add default via 192.168.1.254 metric 50
-          # Ajouter la route spécifique pour le réseau local
-          sudo ip route add 192.168.1.0/24 dev tap0 metric 50
-          
-          echo "=== Nouvelles routes ==="
+          # Suppression de la route par défaut existante
+          sudo ip route del default || true
+          # Ajout d'une nouvelle route par défaut via l'interface VPN
+          sudo ip route add default dev tap0 metric 50
+
+          echo "=== Table de routage ==="
           ip route list
-          
+
           echo "=== Test de connectivité ==="
-          ping -c 2 192.168.1.17 || echo "Ping failed"
+          ping -c 3 192.168.1.17 || echo "Problème de connexion au serveur"
 
       - name: Check VPN Connection
         run: |
@@ -95,7 +82,7 @@ jobs:
       - name: Cleanup VPN
         if: always()
         run: |
-          # Restaurer la route par défaut originale
+          # Restaurer la route par défaut originale si présente
           sudo ip route add default via 10.1.0.1 dev eth0 || true
           sudo pkill openvpn || true
           rm -f config.ovpn auth.txt
