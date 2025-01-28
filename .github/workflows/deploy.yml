@@ -72,8 +72,6 @@ jobs:
 
       - name: Display Network Info After VPN
         run: |
-          echo "IP après connexion VPN:"
-          curl -s ifconfig.me
           echo "Routes après VPN:"
           ip route list
           echo "Interfaces réseau après VPN:"
