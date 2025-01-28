@@ -2,7 +2,7 @@ name: Build and Deploy Portfolio
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
 
 permissions:
   contents: read
@@ -30,27 +30,23 @@ jobs:
 
       - name: Connect to VPN and Configure Network
         run: |
-          echo "=== Démarrage OpenVPN ==="
-          sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon
-          sleep 15
-
-          echo "=== Vérification de l'interface TAP ==="
-          ip a show tap0 || (echo "Interface tap0 introuvable" && exit 1)
-
-          echo "=== Configuration de l'interface ==="
-          sudo ip link set tap0 up
-
-          echo "=== Correction des routes ==="
-          # Suppression de la route par défaut existante
-          sudo ip route del default || true
-          # Ajout d'une nouvelle route par défaut via l'interface VPN
-          sudo ip route add default dev tap0 metric 50
-
-          echo "=== Table de routage ==="
-          ip route list
-
-          echo "=== Test de connectivité ==="
-          ping -c 3 192.168.1.17 || echo "Problème de connexion au serveur"
+            echo "=== Démarrage OpenVPN ==="
+            sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon
+            sleep 15
+            
+            echo "=== Vérification de l'interface TAP ==="
+            sudo ip link set tap0 up
+            sudo dhclient tap0 || sudo ip addr add 192.168.1.100/24 dev tap0
+            
+            echo "=== Correction des routes ==="
+            sudo ip route del default dev eth0 || true
+            sudo ip route add default dev tap0 metric 10
+            
+            echo "=== Table de routage ==="
+            ip route list
+            
+            echo "=== Test de connectivité ==="
+            ping -c 3 192.168.1.17 || echo "Problème de connexion au serveur"
 
       - name: Check VPN Connection
         run: |
