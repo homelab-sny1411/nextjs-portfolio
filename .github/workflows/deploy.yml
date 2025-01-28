@@ -19,7 +19,7 @@ jobs:
       - name: Install OpenVPN and Network Tools
         run: |
           sudo apt update
-          sudo apt install -y openvpn resolvconf bridge-utils net-tools
+          sudo apt install -y openvpn resolvconf bridge-utils
 
       - name: Setup VPN config
         run: |
@@ -30,11 +30,21 @@ jobs:
 
       - name: Connect to VPN
         run: |
+          # Créer et configurer l'interface TAP
+          sudo ip tuntap add dev tap0 mode tap
+          sudo ip link set tap0 up
+
+          # Démarrer OpenVPN
           sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon
-          # Attendre que la connexion soit établie
-          sleep 30
-          # Vérifier que la connexion est active
-          ip addr show tun0
+
+          # Attendre que la connexion s'établisse
+          sleep 15
+
+          # Vérifier l'état de l'interface
+          ip addr show tap0
+
+          # Afficher la table de routage
+          ip route
 
       - name: Test VPN Connection
         run: |
