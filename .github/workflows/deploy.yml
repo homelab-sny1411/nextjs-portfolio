@@ -84,7 +84,11 @@ jobs:
         run: |
           curl -L -o nomad.zip https://releases.hashicorp.com/nomad/1.9.5/nomad_1.9.5_linux_amd64.zip
           unzip nomad.zip
-          ./nomad job run -var="image=ghcr.io/${{ github.repository }}:latest" portfolio.nomad
+          ./nomad job run \
+          -var="image=ghcr.io/${{ github.repository }}:latest" \
+          -var="docker_username=${{ github.actor }}" \
+          -var="docker_password=${{ secrets.DOCKER_REPO_TOKEN }}" \
+          portfolio.nomad
 
       - name: Cleanup VPN
         if: always()

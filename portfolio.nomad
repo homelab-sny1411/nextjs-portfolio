@@ -2,6 +2,14 @@ variable "image" {
   type    = string
 }
 
+variable "docker_username" {
+  type = string
+}
+
+variable "docker_password" {
+  type = string
+}
+
 job "portfolio" {
   datacenters = ["homelab"]
   type = "service"
@@ -31,6 +39,10 @@ job "portfolio" {
       config {
         image = var.image
         ports = ["http"]
+        auth {
+          username = var.docker_username
+          password = var.docker_password
+        }
       }
 
       resources {
