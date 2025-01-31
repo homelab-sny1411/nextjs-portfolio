@@ -52,9 +52,6 @@ jobs:
           sudo ip link set "$VPN_INTERFACE" up
           sudo ip addr add 192.168.1.100/24 dev "$VPN_INTERFACE" || true
           
-          echo "=== Table de routage ==="
-          ip route list
-          
           echo "=== Informations réseau ==="
           ip addr show "$VPN_INTERFACE"
           
