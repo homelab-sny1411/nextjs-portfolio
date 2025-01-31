@@ -19,7 +19,7 @@ jobs:
       - name: Install OpenVPN and Network Tools
         run: |
           sudo apt update
-          sudo apt install -y openvpn resolvconf bridge-utils net-tools
+          sudo apt install -y openvpn resolvconf net-tools traceroute
 
       - name: Setup VPN config
         run: |
@@ -30,31 +30,24 @@ jobs:
 
       - name: Connect to VPN and Configure Network
         run: |
-            echo "=== Démarrage OpenVPN ==="
-            sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon
-            sleep 15
+          echo "=== Démarrage OpenVPN ==="
+          sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon
+          sleep 15
 
-            echo "=== Vérification de l'interface TAP ==="
-            sudo ip link set tap0 up
-            sudo ip addr add 192.168.1.100/24 dev tap0
+          echo "=== Vérification de l'interface VPN ==="
+          VPN_INTERFACE=$(ip -o link show | grep tun | awk -F': ' '{print $2}')
+          echo "Interface VPN détectée: $VPN_INTERFACE"
+          if [ -z "$VPN_INTERFACE" ]; then
+            echo "Aucune interface VPN détectée."
+            exit 1
+          fi
 
-            echo "=== Correction des routes ==="
-            sudo ip route del default dev eth0 || true
-            sudo ip route add default via 192.168.1.1 dev tap0 metric 10
-            sudo ip route add 192.168.1.17 via 192.168.1.1 dev tap0
+          echo "=== Informations réseau ==="
+          ip addr show "$VPN_INTERFACE"
 
-            echo "=== Table de routage ==="
-            ip route list
-
-            echo "=== Informations réseau ==="
-            ip addr show tap0
-            arping -c 3 -I tap0 192.168.1.17
-
-            echo "=== Test de connectivité ==="
-            traceroute 192.168.1.17 || echo "Problème de routage"
-            ping -c 3 192.168.1.17 || echo "Problème de connexion au serveur"
-      
-      
+          echo "=== Test de connectivité ==="
+          traceroute 192.168.1.17 || echo "Problème de routage"
+          ping -c 3 192.168.1.17 || echo "Problème de connexion au serveur"
 
       - name: Check VPN Connection
         run: |
