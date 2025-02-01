@@ -81,7 +81,7 @@ jobs:
         with:
           context: .
           push: true
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/arm
           tags: ghcr.io/${{ github.repository }}:latest
 
       - name: Deploy to Nomad
