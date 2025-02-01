@@ -1,5 +1,5 @@
-# Étape de build avec Node.js 18-alpine
-FROM node:slim AS builder
+# Étape de build avec Node.js (ici en utilisant node:slim, qui est multi-arch)
+FROM --platform=$BUILDPLATFORM node:slim AS builder
 
 # Installer pnpm globalement
 RUN npm install -g pnpm
@@ -20,7 +20,7 @@ COPY . .
 RUN pnpm run build
 
 # Étape de production
-FROM node:slim AS production
+FROM --platform=$BUILDPLATFORM node:slim AS production
 
 # Installer pnpm globalement
 RUN npm install -g pnpm
