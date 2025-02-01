@@ -19,7 +19,7 @@ job "portfolio" {
       name = "portfolio"
       port = "app"
 
-      ttags = [
+      tags = [
         "traefik.enable=true",
         "traefik.http.routers.portfolio.rule=Host(`matteo-humez.fr`)",
         "traefik.http.services.portfolio.loadbalancer.server.port=3000"
