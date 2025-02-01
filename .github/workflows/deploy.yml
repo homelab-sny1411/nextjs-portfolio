@@ -86,8 +86,6 @@ jobs:
           unzip nomad.zip
           ./nomad job run \
           -var="image=ghcr.io/${{ github.repository }}:latest" \
-          -var="docker_username=${{ github.actor }}" \
-          -var="docker_password=${{ secrets.DOCKER_REPO_TOKEN }}" \
           portfolio.nomad
 
       - name: Cleanup VPN
