@@ -10,18 +10,19 @@ job "portfolio" {
     count = 1
 
     network {
-      port "http" {
-        to = 80
+      port "app" {
+        to = 3000
       }
     }
 
     service {
       name = "portfolio"
-      port = "http"
+      port = "app"
 
-      tags = [
+      ttags = [
         "traefik.enable=true",
-        "traefik.http.routers.portfolio.rule=Host(`matteo-humez.fr`)"
+        "traefik.http.routers.portfolio.rule=Host(`matteo-humez.fr`)",
+        "traefik.http.services.portfolio.loadbalancer.server.port=3000"
       ]
     }
 
@@ -30,12 +31,12 @@ job "portfolio" {
 
       config {
         image = var.image
-        ports = ["http"]
+        ports = ["app"]
       }
 
       resources {
-        cpu    = 100
-        memory = 128
+        cpu    = 1000
+        memory = 512
       }
     }
   }
