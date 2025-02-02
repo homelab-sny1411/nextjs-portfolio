@@ -1,5 +1,5 @@
-# Étape de build avec Node.js (ici en utilisant node:slim, qui est multi-arch)
-FROM --platform=$BUILDPLATFORM node:23-alpine3.20 AS builder
+# Étape de build
+FROM --platform=linux/arm64 node:20-alpine AS builder
 
 # Installer pnpm globalement
 RUN npm install -g pnpm
@@ -20,7 +20,7 @@ COPY . .
 RUN pnpm run build
 
 # Étape de production
-FROM --platform=$BUILDPLATFORM node:23-alpine3.20 AS production
+FROM --platform=linux/arm64 node:20-alpine AS production
 
 # Installer pnpm globalement
 RUN npm install -g pnpm
@@ -34,10 +34,6 @@ COPY --from=builder /app /app
 # Installer uniquement les dépendances de production
 RUN pnpm install --prod --frozen-lockfile
 
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
-# Exposer le port
 EXPOSE 3000
 
 # Commande pour lancer l'application
