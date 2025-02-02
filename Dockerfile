@@ -34,6 +34,9 @@ COPY --from=builder /app /app
 # Installer uniquement les dépendances de production
 RUN pnpm install --prod --frozen-lockfile
 
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # Exposer le port
 EXPOSE 3000
 
