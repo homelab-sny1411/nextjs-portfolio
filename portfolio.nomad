@@ -13,7 +13,6 @@ job "portfolio" {
       port "app" {
         to = 3000
       }
-      mode = "bridge"
     }
 
     service {
