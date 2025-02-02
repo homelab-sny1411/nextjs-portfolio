@@ -1,5 +1,5 @@
 variable "image" {
-  type    = string
+  type = string
 }
 
 job "portfolio" {
@@ -13,16 +13,26 @@ job "portfolio" {
       port "app" {
         to = 3000
       }
+      mode = "bridge"
     }
 
     service {
       name = "portfolio"
       port = "app"
 
+      check {
+        type     = "http"
+        path     = "/"
+        interval = "10s"
+        timeout  = "2s"
+      }
+
       tags = [
         "traefik.enable=true",
         "traefik.http.routers.portfolio.rule=Host(`matteo-humez.fr`)",
-        "traefik.http.services.portfolio.loadbalancer.server.port=3000"
+        "traefik.http.routers.portfolio.entrypoints=websecure",
+        "traefik.http.services.portfolio.loadbalancer.server.port=${NOMAD_PORT_app}",
+        "traefik.http.routers.portfolio.tls=true"
       ]
     }
 
@@ -32,6 +42,15 @@ job "portfolio" {
       config {
         image = var.image
         ports = ["app"]
+
+        logging {
+          type = "json-file"
+        }
+      }
+
+      env {
+        NODE_ENV = "production"
+        PORT = "3000"
       }
 
       resources {
