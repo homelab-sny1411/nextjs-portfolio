@@ -28,10 +28,12 @@ job "portfolio" {
 
       tags = [
         "traefik.enable=true",
+        "traefik.http.routers.portfolio.service=portfolio",
         "traefik.http.routers.portfolio.rule=Host(`matteo-humez.fr`)",
         "traefik.http.routers.portfolio.entrypoints=websecure",
         "traefik.http.services.portfolio.loadbalancer.server.port=${NOMAD_PORT_app}",
-        "traefik.http.routers.portfolio.tls=true"
+        "traefik.http.routers.portfolio.tls=true",
+        "traefik.http.routers.portfolio.tls.certresolver=leresolver"
       ]
     }
 
