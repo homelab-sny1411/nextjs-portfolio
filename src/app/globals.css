@@ -7,6 +7,10 @@ html, body {
   -ms-overflow-style: none; /* Internet Explorer 10+ */
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* Pour les autres navigateurs */
 html::-webkit-scrollbar, body::-webkit-scrollbar {
   display: none;

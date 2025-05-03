@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import {useState} from 'react';
 import Modal from "@/app/components/modal";
 import Image from "next/image";
 
@@ -8,14 +8,13 @@ interface Project {
     title: string;
     image: string;
     technologies: string[];
-    descriptionHtml: string; // Description HTML spécifique à chaque projet
+    descriptionHtml: string;
 }
 
 const Projects = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentProject, setCurrentProject] = useState<Project | null>(null);
 
-    // Liste des projets avec leur description HTML
     const projects: Project[] = [
         {
             title: 'Portfolio',
@@ -46,8 +45,8 @@ const Projects = () => {
                     Ce projet m'a permis de découvrir le développement de plugin pour Minecraft et de m'améliorer en Java.
                     J'ai également appris à utiliser Maven pour gérer les dépendances de mon projet.
                 </p>
-               <p class="text-justify mt-2.5">
-               Vous pouvez retrouver le code source et plus de détails sur ce projet sur mon GitHub. 
+                <p class="text-justify mt-2.5">
+                    Vous pouvez retrouver le code source et plus de détails sur ce projet sur mon GitHub.
                 </p>
             `
         },
@@ -63,9 +62,8 @@ const Projects = () => {
                 <p class="text-justify mt-2.5">
                 Pour cela, le département MMI (Métiers du Multimédia et de l'Internet) s'est joint à nous. Nous avons travaillé à quatre sur le backend et eux à cinq sur le frontend. C'était très intéressant, car dans leur formation, ils approfondissent davantage les notions de design, etc., tandis que nous avons plus de notions pour le backend. Nous étions donc complémentaires.
                 </p>
-                
                 <p class="text-justify mt-2.5">
-                Vous pouvez retrouver le code source et plus de détails sur ce projet sur mon GitHub.
+                    Vous pouvez retrouver le code source et plus de détails sur ce projet sur mon GitHub.
                 </p>
             `
         },
@@ -121,8 +119,12 @@ const Projects = () => {
                     key={index}
                     className="bg-gray-800 p-6 rounded-lg shadow-lg w-full sm:w-[calc(40%-1rem)] lg:w-[calc(30%-1rem)]"
                 >
-                    <Image src={project.image} alt={project.title}
-                    width={400} height={200} className="rounded-lg mb-4"
+                    <Image
+                        src={project.image}
+                        alt={project.title}
+                        width={400}
+                        height={200}
+                        className="rounded-lg mb-4"
                     />
                     <h3 className="text-2xl font-bold mb-2">{project.title}</h3>
                     <p className="mb-4">
@@ -130,7 +132,7 @@ const Projects = () => {
                     </p>
                     <button
                         onClick={() => openModal(project)}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                        className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-300"
                     >
                         En savoir plus
                     </button>

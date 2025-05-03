@@ -1,13 +1,9 @@
-variable "image" {
-  type = string
-}
-
 job "portfolio" {
   datacenters = ["homelab"]
   type = "service"
 
   group "web" {
-    count = 1
+    count = 2
 
     network {
       port "app" {
@@ -29,9 +25,9 @@ job "portfolio" {
       tags = [
         "traefik.enable=true",
         "traefik.http.routers.portfolio.service=portfolio",
-        "traefik.http.routers.portfolio.rule=Host(`matteo-humez.fr`)",
+        "traefik.http.routers.portfolio.rule=Host(`www.matteo-humez.fr`) || Host(`matteo-humez.fr`)",
         "traefik.http.routers.portfolio.entrypoints=websecure",
-        "traefik.http.services.portfolio.loadbalancer.server.port=${NOMAD_PORT_app}",
+        "traefik.http.services.portfolio.loadbalancer.server.port=${NOMAD_HOST_PORT_app}",
         "traefik.http.routers.portfolio.tls=true",
         "traefik.http.routers.portfolio.tls.certresolver=leresolver"
       ]
@@ -41,7 +37,7 @@ job "portfolio" {
       driver = "docker"
 
       config {
-        image = var.image
+        image = "ghcr.io/homelab-sny1411/nextjs-portfolio:latest"
         ports = ["app"]
 
         logging {
@@ -51,7 +47,7 @@ job "portfolio" {
 
       env {
         NODE_ENV = "production"
-        PORT = "3000"
+        PORT     = "3000"
       }
 
       resources {
