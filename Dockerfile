@@ -11,7 +11,7 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 
 # Installer les dépendances
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --verbose
 
 # Copier le reste du code
 COPY . .
@@ -32,7 +32,7 @@ WORKDIR /app
 COPY --from=builder /app /app
 
 # Installer uniquement les dépendances de production
-RUN pnpm install --prod --frozen-lockfile
+RUN pnpm install --prod --frozen-lockfile --verbose
 
 EXPOSE 3000
 
