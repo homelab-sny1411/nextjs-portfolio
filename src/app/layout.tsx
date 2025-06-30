@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="fr">
-        <body>
+        <body className="overscroll-none">
         {children}
         </body>
         </html>
