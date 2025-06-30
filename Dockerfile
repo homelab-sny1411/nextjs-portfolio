@@ -1,38 +1,51 @@
-# Étape de build
+# Étape 1 : Construction
 FROM --platform=linux/arm64 node:20-alpine AS builder
 
-# Installer pnpm globalement
-RUN npm install -g pnpm
+# Variables d'environnement pour PNPM
+ENV PNPM_HOME=/pnpm
+ENV PATH=$PNPM_HOME:$PATH
+
+# Installer PNPM + créer répertoire de cache
+RUN mkdir -p /pnpm && npm install -g pnpm
 
 # Définir le répertoire de travail
 WORKDIR /app
 
-# Copier les fichiers nécessaires
+# Copier uniquement les fichiers de dépendances
 COPY package.json pnpm-lock.yaml ./
 
-# Installer les dépendances
-RUN pnpm install --frozen-lockfile --verbose
+# Installer les dépendances avec gel du lockfile
+RUN pnpm install --frozen-lockfile
 
-# Copier le reste du code
+# Copier tout le code source
 COPY . .
 
-# Construire l'application Next.js
-RUN pnpm run build
+# Build de l'application Next.js
+RUN pnpm build
 
-# Étape de production
+# Supprimer les dépendances inutiles pour prod
+RUN pnpm prune --prod
+
+# Étape 2 : Image finale allégée pour production
 FROM --platform=linux/arm64 node:20-alpine AS production
 
-# Installer pnpm globalement
-RUN npm install -g pnpm
+# Variables d'environnement pour PNPM
+ENV PNPM_HOME=/pnpm
+ENV PATH=$PNPM_HOME:$PATH
 
-# Définir le répertoire de travail
+# Installer PNPM
+RUN mkdir -p /pnpm && npm install -g pnpm
+
+# Répertoire de travail
 WORKDIR /app
 
-# Copier les fichiers nécessaires de la phase de build
-COPY --from=builder /app /app
-
-# Installer uniquement les dépendances de production
-RUN pnpm install --prod --frozen-lockfile --verbose
+# Copier uniquement ce qui est nécessaire au runtime
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/next.config.js ./next.config.js
+COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
 
 EXPOSE 3000
 
