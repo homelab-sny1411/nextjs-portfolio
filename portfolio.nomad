@@ -1,3 +1,9 @@
+variable "image" {
+  description = "Docker image to deploy"
+  type        = string
+  default     = "ghcr.io/homelab-sny1411/nextjs-portfolio:latest"
+}
+
 job "portfolio" {
   datacenters = ["homelab"]
   type = "service"
@@ -37,7 +43,7 @@ job "portfolio" {
       driver = "docker"
 
       config {
-        image = "ghcr.io/homelab-sny1411/nextjs-portfolio:latest"
+        image = var.image
         ports = ["app"]
 
         logging {
