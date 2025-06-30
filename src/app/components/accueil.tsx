@@ -4,7 +4,7 @@ import ScrollIndicator from "@/app/components/scrollIndicator";
 
 const Accueil = () => {
     return (
-        <section id="accueil" className="min-h-screen flex flex-col items-center justify-center text-white">
+        <section id="accueil" className="h-dvh flex flex-col items-center justify-center text-white">
             <Image
                 src="/images/background.jpg" // Chemin de l'image
                 alt="Background"
