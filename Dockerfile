@@ -1,5 +1,5 @@
 # Étape 1 : Construction
-FROM --platform=linux/arm64 node:20-alpine AS builder
+FROM node:20-alpine AS builder
 
 # Variables d'environnement pour PNPM
 ENV PNPM_HOME=/pnpm
@@ -27,7 +27,7 @@ RUN pnpm build
 RUN pnpm prune --prod
 
 # Étape 2 : Image finale allégée pour production
-FROM --platform=linux/arm64 node:20-alpine AS production
+FROM node:20-alpine AS production
 
 # Variables d'environnement pour PNPM
 ENV PNPM_HOME=/pnpm
