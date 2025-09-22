@@ -11,32 +11,10 @@ permissions:
 
 jobs:
   build-and-push:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Install dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y openvpn resolvconf net-tools
-
-      - name: Setup VPN config
-        run: |
-          echo "${{ secrets.OVPN_CONFIG }}" > config.ovpn
-          echo "${{ secrets.OVPN_USERNAME }}" > auth.txt
-          echo "${{ secrets.OVPN_PASSWORD }}" >> auth.txt
-          sudo chmod 600 config.ovpn auth.txt
-
-      - name: Connect to VPN
-        run: |
-          sudo openvpn --config config.ovpn --auth-user-pass auth.txt --daemon
-          sleep 15
-          if ! pgrep openvpn; then
-            echo "OpenVPN failed to start"
-            exit 1
-          fi
-          echo "VPN connected."
 
       - name: Set up Docker Buildx with insecure registry
         uses: docker/setup-buildx-action@v3
@@ -47,7 +25,7 @@ jobs:
               http = true
               insecure = true
 
-      - name: Login to Private Registry manually
+      - name: Login to Private Registry
         run: |
           echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login 192.168.1.13:5000 \
             -u "${{ secrets.REGISTRY_USER }}" --password-stdin
@@ -59,9 +37,3 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: 192.168.1.13:5000/portfolio:latest
-
-      - name: Cleanup VPN
-        if: always()
-        run: |
-          sudo pkill openvpn || true
-          rm -f config.ovpn auth.txt
