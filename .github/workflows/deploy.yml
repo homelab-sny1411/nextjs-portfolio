@@ -16,6 +16,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Fix Docker config (disable Windows credential helper)
+        run: |
+          mkdir -p ~/.docker
+          echo '{ "auths": {}, "credsStore": "" }' > ~/.docker/config.json
+
       - name: Set up Docker Buildx with insecure registry
         uses: docker/setup-buildx-action@v3
         with:
@@ -24,11 +29,6 @@ jobs:
             [registry."192.168.1.13:5000"]
               http = true
               insecure = true
-
-      - name: Disable Docker credential helper
-        run: |
-          mkdir -p ~/.docker
-          echo '{ "credsStore": "" }' > ~/.docker/config.json
 
       - name: Login to Private Registry
         run: |
