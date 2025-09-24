@@ -44,6 +44,10 @@ job "portfolio" {
 
       config {
         image = var.image
+        auth {
+          username = "${NOMAD_ENV_REGISTRY_USER}"
+          password = "${NOMAD_ENV_REGISTRY_PASSWORD}"
+        }
         ports = ["app"]
 
         logging {
