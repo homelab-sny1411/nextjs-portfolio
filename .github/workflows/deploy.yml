@@ -15,11 +15,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Nomad CLI
+      - name: Install Nomad
         run: |
           curl -L -o nomad.zip https://releases.hashicorp.com/nomad/1.9.5/nomad_1.9.5_linux_amd64.zip
-          unzip -o nomad.zip -d /usr/local/bin
-          rm nomad.zip
+          unzip nomad.zip -d nomad-temp
+          sudo install -m 0755 nomad-temp/nomad /usr/local/bin/nomad
+          rm -rf nomad.zip nomad-temp
 
       - name: Deploy Job to Nomad
         env:
