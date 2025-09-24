@@ -1,44 +1,30 @@
-name: Build and Push to Private Registry
+name: Deploy to Nomad
 
 on:
-  push:
-    branches: [ main ]
-
-permissions:
-  contents: read
-  packages: write
-  id-token: write
+  workflow_run:
+    workflows: ["Build and Push Image"]
+    types:
+      - completed
 
 jobs:
-  build-and-push:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: self-hosted
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Fix Docker config (disable Windows credential helper)
+      - name: Install Nomad CLI
         run: |
-          mkdir -p ~/.docker
-          echo '{ "auths": {}, "credsStore": "" }' > ~/.docker/config.json
+          curl -L -o nomad.zip https://releases.hashicorp.com/nomad/1.9.5/nomad_1.9.5_linux_amd64.zip
+          unzip -o nomad.zip -d /usr/local/bin
+          rm nomad.zip
 
-      - name: Set up Docker Buildx with insecure registry
-        uses: docker/setup-buildx-action@v3
-        with:
-          driver: docker-container
-          buildkitd-config-inline: |
-            [registry."192.168.1.13:5000"]
-              http = true
-              insecure = true
-
-      - name: Login to Private Registry
+      - name: Deploy Job to Nomad
+        env:
+          NOMAD_ADDR: http://192.168.1.17:4646
         run: |
-          echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login 192.168.1.13:5000 \
-            -u "${{ secrets.REGISTRY_USER }}" --password-stdin
-
-      - name: Build and Push Docker Image (multi-arch)
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          platforms: linux/amd64,linux/arm64
-          tags: 192.168.1.13:5000/portfolio:latest
+          nomad job run \
+            -var="image=192.168.1.13:5000/portfolio:latest" \
+            portfolio.nomad
