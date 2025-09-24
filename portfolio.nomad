@@ -1,12 +1,21 @@
 variable "image" {
   description = "Docker image to deploy"
   type        = string
-  default     = "ghcr.io/homelab-sny1411/nextjs-portfolio:latest"
+}
+
+variable "registry_user" {
+  description = "Docker registry username"
+  type        = string
+}
+
+variable "registry_password" {
+  description = "Docker registry password"
+  type        = string
 }
 
 job "portfolio" {
   datacenters = ["homelab"]
-  type = "service"
+  type        = "service"
 
   group "web" {
     count = 2
@@ -45,8 +54,8 @@ job "portfolio" {
       config {
         image = var.image
         auth {
-          username = "${NOMAD_ENV_REGISTRY_USER}"
-          password = "${NOMAD_ENV_REGISTRY_PASSWORD}"
+          username = var.registry_user
+          password = var.registry_password
         }
         ports = ["app"]
 

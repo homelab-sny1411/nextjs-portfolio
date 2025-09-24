@@ -25,7 +25,9 @@ jobs:
       - name: Deploy Job to Nomad
         env:
           NOMAD_ADDR: http://192.168.1.17:4646
-          REGISTRY_USER: ${{ secrets.REGISTRY_USER }}
-          REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
         run: |
-          nomad job run portfolio.nomad
+          nomad job run \
+            -var="image=192.168.1.13:5000/portfolio:latest" \
+            -var="registry_user=${{ secrets.REGISTRY_USER }}" \
+            -var="registry_password=${{ secrets.REGISTRY_PASSWORD }}" \
+            portfolio.nomad
