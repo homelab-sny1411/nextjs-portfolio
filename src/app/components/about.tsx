@@ -4,16 +4,20 @@ const About = () => {
     return (
         <section id="about" className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
             <div className="w-3/4 h-3/4 flex flex-col lg:flex-row items-center lg:items-start justify-between space-y-6 lg:space-y-0">
-                {/* Partie gauche: Description personnelle */}
-                <div className="lg:w-1/2 p-8">
+                <div className="lg:w-1/2 p-6">
                     <h2 className="text-4xl font-bold mb-4">À propos de moi</h2>
                     <p className="text-lg">
-                        Je suis actuellement en 3ème année de BUT Informatique, passionné par le développement informatique et
+                        Je travaille actuellement chez <a href={"https://waigeo.fr/"} target={"_blank"} className="underline hover:underline-offset-4 transition-colors duration-300">Waigéo</a>, passionné par le développement informatique et
                         notamment par les dernières technologies. J&#39;aime apprendre de nouvelles choses et relever des défis.
+                    </p>
+                    <br/>
+                    <p className="text-lg">
+                        Au sein de Waigéo, j&#39;ai eu l&#39;opportunité de travailler sur une variété de technologies, notamment nuxt.js, express.js, node.js, socket.io, symfony, et bien d&#39;autres.
+                        Cette expérience m&#39;a permis de développer mes compétences en développement web et de contribuer à des projets innovants.
                     </p>
                 </div>
 
-                <div className="lg:w-1/2 p-8">
+                <div className="lg:w-1/2 p-6">
                     <h3 className="text-3xl font-semibold mb-6">Mon parcours</h3>
                     <ul className="space-y-6">
                         {/* BUT informatique */}
@@ -53,7 +57,6 @@ const About = () => {
                             </div>
                         </li>
 
-                        {/* Alternance chez Waigeo */}
                         <li className="flex items-center">
                             <div className="w-1/4 flex justify-center">
                                 <div className="p-2 w-18 h-18 sm:w-20 sm:h-20 md:w-22 md:h-22 bg-white  aspect-square rounded-full flex items-center justify-center overflow-hidden">
@@ -68,7 +71,24 @@ const About = () => {
                             </div>
                             <div className="w-3/4 pl-4">
                                 <h4 className="text-2xl font-semibold">Alternance chez Waigeo</h4>
-                                <p className="text-lg">Septembre 2024 - Actuellement</p>
+                                <p className="text-lg">Septembre 2024 - Août 2025</p>
+                            </div>
+                        </li>
+                        <li className="flex items-center">
+                            <div className="w-1/4 flex justify-center">
+                                <div className="p-2 w-18 h-18 sm:w-20 sm:h-20 md:w-22 md:h-22 bg-white  aspect-square rounded-full flex items-center justify-center overflow-hidden">
+                                    <Image
+                                        src="/images/waigeo-logo.svg"
+                                        alt="Waigeo Logo"
+                                        width={60}
+                                        height={60}
+                                        className="object-contain"
+                                    />
+                                </div>
+                            </div>
+                            <div className="w-3/4 pl-4">
+                                <h4 className="text-2xl font-semibold">Développeur web chez Waigeo</h4>
+                                <p className="text-lg">Septembre 2025 - Actuellement</p>
                             </div>
                         </li>
                     </ul>
