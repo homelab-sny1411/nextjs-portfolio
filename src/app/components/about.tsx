@@ -12,8 +12,13 @@ const About = () => {
                     </p>
                     <br/>
                     <p className="text-lg">
-                        Au sein de Waigéo, j&#39;ai eu l&#39;opportunité de travailler sur une variété de technologies, notamment nuxt.js, express.js, node.js, socket.io, symfony, et bien d&#39;autres.
+                        Au sein de Waigéo, j&#39;ai eu l&#39;opportunité de travailler sur une variété de technologies, notamment <strong>nuxt.js</strong>, <strong>express.js</strong>, <strong>node.js</strong>, <strong>socket.io</strong>, <strong>symfony</strong>, et bien d&#39;autres.
                         Cette expérience m&#39;a permis de développer mes compétences en développement web et de contribuer à des projets innovants.
+                    </p>
+                    <br/>
+                    <p className="text-lg">
+                        En dehors de mon travail, je consacre beaucoup de temps à mes projets personnels, principalement autour de <strong>Next.js</strong>. Je m&#39;intéresse également à tout ce qui touche aux réseaux et à l&#39;infrastructure : j&#39;expérimente la mise en place de <strong>Home Assistant</strong>, l&#39;automatisation de déploiements via CI/CD avec <strong>GitHub Runner</strong> en local, la gestion de <strong>registres Docker</strong> privés, ainsi que le déploiement d&#39;applications avec <strong>Nomad</strong> et <strong>Vault</strong>.
+                        Ces expériences me permettent de renforcer mes compétences en architecture, en déploiement et en orchestration, et me passionnent par la manière dont elles allient développement et infrastructure.
                     </p>
                 </div>
 
@@ -52,7 +57,7 @@ const About = () => {
                                 </div>
                             </div>
                             <div className="w-3/4 pl-4">
-                                <h4 className="text-2xl font-semibold">Stage chez Waigeo</h4>
+                                <h4 className="text-2xl font-semibold">Stage chez Waigéo</h4>
                                 <p className="text-lg">Avril 2024 - Juin 2024</p>
                             </div>
                         </li>
@@ -70,7 +75,7 @@ const About = () => {
                                 </div>
                             </div>
                             <div className="w-3/4 pl-4">
-                                <h4 className="text-2xl font-semibold">Alternance chez Waigeo</h4>
+                                <h4 className="text-2xl font-semibold">Alternance chez Waigéo</h4>
                                 <p className="text-lg">Septembre 2024 - Août 2025</p>
                             </div>
                         </li>
@@ -87,7 +92,7 @@ const About = () => {
                                 </div>
                             </div>
                             <div className="w-3/4 pl-4">
-                                <h4 className="text-2xl font-semibold">Développeur web chez Waigeo</h4>
+                                <h4 className="text-2xl font-semibold">Développeur web chez Waigéo</h4>
                                 <p className="text-lg">Septembre 2025 - Actuellement</p>
                             </div>
                         </li>
