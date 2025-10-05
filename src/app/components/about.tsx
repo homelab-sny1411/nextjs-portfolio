@@ -25,25 +25,6 @@ const About = () => {
                 <div className="lg:w-1/2 p-6">
                     <h3 className="text-3xl font-semibold mb-6">Mon parcours</h3>
                     <ul className="space-y-6">
-                        {/* BUT informatique */}
-                        <li className="flex items-center">
-                            <div className="w-1/4 flex justify-center">
-                                <div className="p-2 w-18 h-18 sm:w-20 sm:h-20 md:w-22 md:h-22 bg-white  aspect-square rounded-full flex items-center justify-center overflow-hidden">
-                                    <Image
-                                        src="/images/iut-lens-logo.svg"
-                                        alt="IUT Lens Logo"
-                                        width={60}
-                                        height={60}
-                                        className="object-contain"
-                                    />
-                                </div>
-                            </div>
-                            <div className="w-3/4 pl-4">
-                                <h4 className="text-2xl font-semibold">BUT Informatique</h4>
-                                <p className="text-lg">2022 - 2025</p>
-                            </div>
-                        </li>
-
                         <li className="flex items-center">
                             <div className="w-1/4 flex justify-center">
                                 <div className="p-2 w-18 h-18 sm:w-20 sm:h-20 md:w-22 md:h-22 bg-white  aspect-square rounded-full flex items-center justify-center overflow-hidden">
@@ -57,11 +38,10 @@ const About = () => {
                                 </div>
                             </div>
                             <div className="w-3/4 pl-4">
-                                <h4 className="text-2xl font-semibold">Stage chez Waigéo</h4>
-                                <p className="text-lg">Avril 2024 - Juin 2024</p>
+                                <h4 className="text-2xl font-semibold">Développeur web chez Waigéo</h4>
+                                <p className="text-lg">Septembre 2025 - Actuellement</p>
                             </div>
                         </li>
-
                         <li className="flex items-center">
                             <div className="w-1/4 flex justify-center">
                                 <div className="p-2 w-18 h-18 sm:w-20 sm:h-20 md:w-22 md:h-22 bg-white  aspect-square rounded-full flex items-center justify-center overflow-hidden">
@@ -92,8 +72,25 @@ const About = () => {
                                 </div>
                             </div>
                             <div className="w-3/4 pl-4">
-                                <h4 className="text-2xl font-semibold">Développeur web chez Waigéo</h4>
-                                <p className="text-lg">Septembre 2025 - Actuellement</p>
+                                <h4 className="text-2xl font-semibold">Stage chez Waigéo</h4>
+                                <p className="text-lg">Avril 2024 - Juin 2024</p>
+                            </div>
+                        </li>
+                        <li className="flex items-center">
+                            <div className="w-1/4 flex justify-center">
+                                <div className="p-2 w-18 h-18 sm:w-20 sm:h-20 md:w-22 md:h-22 bg-white  aspect-square rounded-full flex items-center justify-center overflow-hidden">
+                                    <Image
+                                        src="/images/iut-lens-logo.svg"
+                                        alt="IUT Lens Logo"
+                                        width={60}
+                                        height={60}
+                                        className="object-contain"
+                                    />
+                                </div>
+                            </div>
+                            <div className="w-3/4 pl-4">
+                                <h4 className="text-2xl font-semibold">BUT Informatique</h4>
+                                <p className="text-lg">2022 - 2025</p>
                             </div>
                         </li>
                     </ul>
