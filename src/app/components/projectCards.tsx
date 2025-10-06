@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import {ChevronLeft, ChevronRight, X} from 'lucide-react';
 
 interface Project {
     title: string;
@@ -12,7 +12,18 @@ interface Project {
     year: string;
 }
 
-const Modal = ({ isOpen, onClose, project, onNext, onPrev, hasNext, hasPrev }) => {
+interface ModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    project: Project | null;
+    onNext: () => void;
+    onPrev: () => void;
+    hasNext: boolean;
+    hasPrev: boolean;
+}
+
+
+const Modal = ({isOpen, onClose, project, onNext, onPrev, hasNext, hasPrev}: ModalProps) => {
     const [touchStart, setTouchStart] = useState(0);
     const [touchEnd, setTouchEnd] = useState(0);
 
@@ -28,11 +39,11 @@ const Modal = ({ isOpen, onClose, project, onNext, onPrev, hasNext, hasPrev }) =
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [isOpen, hasNext, hasPrev, onNext, onPrev, onClose]);
 
-    const handleTouchStart = (e) => {
+    const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
         setTouchStart(e.targetTouches[0].clientX);
     };
 
-    const handleTouchMove = (e) => {
+    const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
         setTouchEnd(e.targetTouches[0].clientX);
     };
 
