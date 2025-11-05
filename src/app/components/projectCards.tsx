@@ -29,10 +29,10 @@ const Modal = ({isOpen, onClose, project, onNext, onPrev, hasNext, hasPrev}: Mod
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (!isOpen) return;
-            if (e.key === 'ArrowLeft' && hasPrev) onPrev();
-            if (e.key === 'ArrowRight' && hasNext) onNext();
-            if (e.key === 'Escape') onClose();
+            if (!isOpen) {return;}
+            if (e.key === 'ArrowLeft' && hasPrev) {onPrev();}
+            if (e.key === 'ArrowRight' && hasNext) {onNext();}
+            if (e.key === 'Escape') {onClose();}
         };
 
         window.addEventListener('keydown', handleKeyDown);
@@ -48,7 +48,7 @@ const Modal = ({isOpen, onClose, project, onNext, onPrev, hasNext, hasPrev}: Mod
     };
 
     const handleTouchEnd = () => {
-        if (!touchStart || !touchEnd) return;
+        if (!touchStart || !touchEnd) {return;}
 
         const distance = touchStart - touchEnd;
         const minSwipeDistance = 50;
@@ -64,7 +64,7 @@ const Modal = ({isOpen, onClose, project, onNext, onPrev, hasNext, hasPrev}: Mod
         setTouchEnd(0);
     };
 
-    if (!isOpen || !project) return null;
+    if (!isOpen || !project) {return null;}
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90" onClick={onClose}>
@@ -94,7 +94,7 @@ const Modal = ({isOpen, onClose, project, onNext, onPrev, hasNext, hasPrev}: Mod
                             height={400}
                             className="w-full h-full object-cover"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 md:from-gray-800 via-transparent to-transparent"></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 md:from-gray-800 via-transparent to-transparent" />
                     </div>
 
                     {/* Infos projet */}

@@ -17,7 +17,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, htmlContent }) => {
         }
     }, [isOpen]);
 
-    if (!showModal && !isOpen) return null;
+    if (!showModal && !isOpen) {return null;}
 
     return (
         <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}>

@@ -7,7 +7,7 @@ const About = () => {
                 <div className="lg:w-1/2 p-6">
                     <h2 className="text-4xl font-bold mb-4">À propos de moi</h2>
                     <p className="text-lg">
-                        Je travaille actuellement chez <a href={"https://waigeo.fr/"} target={"_blank"} className="underline hover:underline-offset-4 transition-colors duration-300">Waigéo</a>, passionné par le développement informatique et
+                        Je travaille actuellement chez <a href="https://waigeo.fr/" target="_blank" className="underline hover:underline-offset-4 transition-colors duration-300" rel="noreferrer">Waigéo</a>, passionné par le développement informatique et
                         notamment par les dernières technologies. J&#39;aime apprendre de nouvelles choses et relever des défis.
                     </p>
                     <br/>
