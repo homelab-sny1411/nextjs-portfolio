@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 const About = () => {
     return (
-        <section id="about" className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+        <section id="about" className="min-h-dvh bg-gray-900 text-white flex items-center justify-center">
             <div className="w-3.5/4 h-3/4 flex flex-col lg:flex-row items-center lg:items-start justify-between space-y-6 lg:space-y-0">
                 <div className="lg:w-1/2 p-6">
                     <h2 className="text-4xl font-bold mb-4">À propos de moi</h2>

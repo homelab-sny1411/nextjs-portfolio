@@ -4,7 +4,7 @@ import Footer from "@/app/components/footer";
 
 const Contact = () => {
     return (
-        <div id="contact" className="min-h-screen bg-gray-800 flex flex-col justify-between">
+        <div id="contact" className="min-h-dvh bg-gray-800 flex flex-col justify-between">
             {/* Contenu principal */}
             <div className="flex-grow flex items-center justify-center">
                 <div className="w-full max-w-4xl h-auto lg:h-96 bg-gray-900 flex flex-col lg:flex-row rounded-lg shadow-lg overflow-hidden">
