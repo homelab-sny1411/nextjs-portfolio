@@ -53,6 +53,8 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: 192.168.1.13:5000/portfolio:latest
+          build-args: |
+            SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
           cache-from: |
             type=local,src=/tmp/.buildx-cache
             type=registry,ref=192.168.1.13:5000/portfolio:buildcache

@@ -5,6 +5,10 @@ FROM node:20-alpine AS builder
 ENV PNPM_HOME=/pnpm
 ENV PATH=$PNPM_HOME:$PATH
 
+# Argument de build pour le token Sentry
+ARG SENTRY_AUTH_TOKEN
+ENV SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
+
 # Installer PNPM + créer répertoire de cache
 RUN mkdir -p /pnpm && npm install -g pnpm
 
