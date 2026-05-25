@@ -28,5 +28,8 @@
     "postcss": "^8",
     "tailwindcss": "^4.1.16",
     "typescript": "^5"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["@sentry/cli", "sharp", "unrs-resolver"]
   }
 }
