@@ -29,6 +29,11 @@ job "portfolio" {
   group "web" {
     count = 2
 
+    constraint {
+      attribute = "${attr.cpu.arch}"
+      value     = "arm64"
+    }
+
     network {
       port "app" {
         to = 3000
@@ -75,11 +80,12 @@ job "portfolio" {
       env {
         NODE_ENV = "production"
         PORT     = "3000"
+        HOSTNAME = "0.0.0.0"
       }
 
       resources {
         cpu    = 500
-        memory = 512
+        memory = 256
       }
     }
   }
