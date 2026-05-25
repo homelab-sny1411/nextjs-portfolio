@@ -14,20 +14,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Cache Node.js modules
-        uses: actions/cache@v3
-        with:
-          path: |
-            **/node_modules
-            ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json', '**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: Set up QEMU (for multi-arch builds)
-        uses: docker/setup-qemu-action@v3
+        uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -43,16 +30,16 @@ jobs:
           echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login 192.168.1.16:5000 \
             -u "${{ secrets.REGISTRY_USER }}" --password-stdin
 
-      - name: Build and Push Docker Image (multi-arch)
+      - name: Build and Push Docker Image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/arm64
           tags: |
             192.168.1.16:5000/portfolio:latest
             192.168.1.16:5000/portfolio:${{ github.sha }}
           build-args: |
             SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
-          cache-from: type=registry,ref=192.168.1.16:5000/portfolio:buildcache
-          cache-to: type=registry,ref=192.168.1.16:5000/portfolio:buildcache,mode=max
+          cache-from: type=local,src=/tmp/buildkit-cache
+          cache-to: type=local,dest=/tmp/buildkit-cache,mode=max
