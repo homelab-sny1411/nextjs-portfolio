@@ -19,10 +19,11 @@ job "portfolio" {
 
   update {
     max_parallel      = 1
-    min_healthy_time  = "10s"
+    min_healthy_time  = "15s"
     healthy_deadline  = "3m"
     progress_deadline = "10m"
     auto_revert       = true
+    canary            = 1
   }
 
   group "web" {
@@ -35,24 +36,26 @@ job "portfolio" {
     }
 
     service {
-      name = "portfolio"
-      port = "app"
+      name     = "portfolio"
+      port     = "app"
+      provider = "consul"
 
       check {
         type     = "http"
         path     = "/"
         interval = "10s"
-        timeout  = "2s"
+        timeout  = "3s"
       }
 
       tags = [
         "traefik.enable=true",
-        "traefik.http.routers.portfolio.service=portfolio",
         "traefik.http.routers.portfolio.rule=Host(`www.matteo-humez.fr`) || Host(`matteo-humez.fr`)",
         "traefik.http.routers.portfolio.entrypoints=websecure",
-        "traefik.http.services.portfolio.loadbalancer.server.port=${NOMAD_HOST_PORT_app}",
         "traefik.http.routers.portfolio.tls=true",
-        "traefik.http.routers.portfolio.tls.certresolver=leresolver"
+        "traefik.http.routers.portfolio.tls.certresolver=le",
+        "traefik.http.services.portfolio.loadbalancer.server.port=${NOMAD_HOST_PORT_app}",
+        "traefik.http.services.portfolio.loadbalancer.healthcheck.path=/",
+        "traefik.http.services.portfolio.loadbalancer.healthcheck.interval=10s",
       ]
     }
 
@@ -62,14 +65,11 @@ job "portfolio" {
       config {
         image = var.image
         auth {
-          username = var.registry_user
-          password = var.registry_password
+          username       = var.registry_user
+          password       = var.registry_password
+          server_address = "192.168.1.16:5000"
         }
         ports = ["app"]
-
-        logging {
-          type = "json-file"
-        }
       }
 
       env {
@@ -78,7 +78,7 @@ job "portfolio" {
       }
 
       resources {
-        cpu    = 1000
+        cpu    = 500
         memory = 512
       }
     }
