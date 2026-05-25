@@ -8,7 +8,8 @@ ENV SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+RUN printf 'onlyBuiltDependencies[]=@sentry/cli\nonlyBuiltDependencies[]=sharp\nonlyBuiltDependencies[]=unrs-resolver\n' > .npmrc && \
+    pnpm install --frozen-lockfile
 
 COPY . .
 RUN pnpm build
