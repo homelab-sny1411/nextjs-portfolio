@@ -7,8 +7,8 @@ ENV SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
 
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --prefer-offline
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN pnpm install --frozen-lockfile
 
 COPY . .
 RUN pnpm build
