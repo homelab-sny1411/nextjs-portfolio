@@ -72,7 +72,7 @@ job "portfolio" {
         auth {
           username       = var.registry_user
           password       = var.registry_password
-          server_address = "192.168.1.16:5000"
+          server_address = "registry.matteo-humez.fr"
         }
         ports = ["app"]
       }
