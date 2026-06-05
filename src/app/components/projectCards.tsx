@@ -205,6 +205,30 @@ const Projects = () => {
             year: '2024'
         },
         {
+            title: 'SnyTools',
+            image: '/images/projets/snytools.png',
+            technologies: ['JavaScript', 'WebAssembly', 'Docker', 'PWA'],
+            descriptionHtml: `
+                <h2 class="text-2xl font-bold mb-4">SnyTools</h2>
+                <p class="text-justify">
+                À un moment donné, j'en ai eu marre d'utiliser des sites web chelous pour fusionner des PDFs ou convertir des images. Du coup, j'ai décidé de créer mes propres outils.
+                </p>
+                <p class="text-justify mt-2.5">
+                SnyTools, c'est une petite application web avec quelques outils pratiques. Pour l'instant, il y a un fusionneur de PDFs. Je suis en train de travailler sur un convertisseur d'images, un créateur de ZIP, et un convertisseur audio.
+                </p>
+                <p class="text-justify mt-2.5">
+                L'important pour moi, c'était que tout fonctionne sur l'appareil de la personne. Zéro upload, zéro données collectées. Juste des outils qui font ce qu'on leur demande, c'est tout.
+                </p>
+                <p class="text-justify mt-2.5">
+                Techniquement, j'ai utilisé WebAssembly pour que ce soit rapide, un Service Worker pour que ça marche hors ligne, et j'ai déployé ça avec Docker. Rien de révolutionnaire, mais ça marche bien.
+                </p>
+                <p class="text-justify mt-2.5">
+                C'était cool à faire parce que j'ai vraiment exploré WebAssembly sérieusement, et j'ai appris pas mal de trucs sur les PWA.
+                </p>
+            `,
+            year: '2024'
+        },
+        {
             title: 'Bingo !',
             image: '/images/projets/bingo.png',
             technologies: ['Java', 'Maven', 'Minecraft', 'PaperMc'],
