@@ -209,7 +209,7 @@ const Projects = () => {
                     déployé avec Docker.
                 </p>
             `,
-            year: '2024',
+            year: '2026',
         },
         {
             title: 'Bingo !',
