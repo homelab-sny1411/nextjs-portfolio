@@ -183,7 +183,7 @@ const Projects = () => {
                     stylé avec <strong>Tailwind CSS</strong>.
                 </p>
                 <p class="text-justify mt-3">
-                    Ce projet a grandement évolué depuis sa création — initialement en Laravel, puis refait en Next.js
+                    Ce projet a grandement évolué depuis sa création : initialement en Laravel, puis refait en Next.js
                     dans le cadre d'un cours sur l'écologie numérique. Les images sont automatiquement compressées,
                     ce qui réduit l'empreinte carbone et améliore le temps de chargement.
                 </p>
@@ -201,7 +201,7 @@ const Projects = () => {
                 </p>
                 <p class="text-justify mt-3">
                     SnyTools, c'est une application web avec des outils pratiques : un fusionneur de PDFs,
-                    un convertisseur d'images, et d'autres à venir. Tout fonctionne sur l'appareil —
+                    un convertisseur d'images, et d'autres à venir. Tout fonctionne sur l'appareil :
                     zéro upload, zéro données collectées.
                 </p>
                 <p class="text-justify mt-3">
@@ -250,7 +250,7 @@ const Projects = () => {
             githubUrl: 'https://github.com/sny1411',
             descriptionHtml: `
                 <p class="text-justify">
-                    Des plugins Minecraft personnalisés développés pour mes amis — ils imaginent,
+                    Des plugins Minecraft personnalisés développés pour mes amis : ils imaginent,
                     je construis. Le meilleur exemple est un serveur ouvert début 2023, avec des ajouts
                     documentés dans un wiki écrit par un ami.
                 </p>
@@ -267,7 +267,7 @@ const Projects = () => {
                     vous proposez jusqu'à trouver.
                 </p>
                 <p class="text-justify mt-3">
-                    Ce projet me tient à cœur — c'est mon tout premier projet, réalisé en 6ᵉ en 2015.
+                    Ce projet me tient à cœur : c'est mon tout premier projet, réalisé en 6ᵉ en 2015.
                 </p>
             `,
             year: '2015',
@@ -346,7 +346,7 @@ const Projects = () => {
                                         onClick={() => openModal(index)}
                                         className="text-sm text-accent hover:text-white transition-colors duration-200 self-start"
                                     >
-                                        En savoir plus →
+                                        En savoir plus
                                     </button>
                                 </div>
                             </div>

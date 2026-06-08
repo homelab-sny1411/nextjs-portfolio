@@ -4,26 +4,30 @@ const timeline = [
     {
         logo: '/images/waigeo-logo.svg',
         alt: 'Waigéo',
-        title: 'Développeur web — Waigéo',
-        period: 'Sept. 2025 → Aujourd\'hui',
+        role: 'Développeur web',
+        company: 'Waigéo',
+        period: 'Sept. 2025 – Aujourd\'hui',
     },
     {
         logo: '/images/waigeo-logo.svg',
         alt: 'Waigéo',
-        title: 'Alternance — Waigéo',
-        period: 'Sept. 2024 → Août 2025',
+        role: 'Alternance',
+        company: 'Waigéo',
+        period: 'Sept. 2024 – Août 2025',
     },
     {
         logo: '/images/waigeo-logo.svg',
         alt: 'Waigéo',
-        title: 'Stage — Waigéo',
-        period: 'Avr. 2024 → Juin 2024',
+        role: 'Stage',
+        company: 'Waigéo',
+        period: 'Avr. 2024 – Juin 2024',
     },
     {
         logo: '/images/iut-lens-logo.svg',
         alt: 'IUT Lens',
-        title: 'BUT Informatique — IUT Lens',
-        period: '2022 → 2025',
+        role: 'BUT Informatique',
+        company: 'IUT Lens',
+        period: '2022 – 2025',
     },
 ];
 
@@ -73,18 +77,18 @@ const About = () => {
                     <ul className="space-y-7">
                         {timeline.map((item, i) => (
                             <li key={i} className="flex items-center gap-5">
-                                <div className="w-12 h-12 shrink-0 bg-white rounded-full flex items-center justify-center overflow-hidden">
+                                <div className="w-12 h-12 shrink-0 bg-white rounded-full flex items-center justify-center overflow-hidden p-2.5">
                                     <Image
                                         src={item.logo}
                                         alt={item.alt}
-                                        width={30}
-                                        height={30}
-                                        className="object-contain w-auto h-auto"
+                                        width={28}
+                                        height={28}
+                                        className="object-contain"
                                     />
                                 </div>
                                 <div>
-                                    <p className="font-medium text-white leading-snug">{item.title}</p>
-                                    <p className="text-sm text-[#6b7280] mt-0.5">{item.period}</p>
+                                    <p className="font-medium text-white leading-snug">{item.role}</p>
+                                    <p className="text-sm text-[#6b7280] mt-0.5">{item.company} · {item.period}</p>
                                 </div>
                             </li>
                         ))}

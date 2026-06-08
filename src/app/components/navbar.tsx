@@ -16,7 +16,7 @@ const Navbar = () => {
 
     return (
         <>
-            {/* Desktop — pill flottante */}
+            {/* Desktop : pill flottante */}
             <nav className="hidden md:flex fixed top-5 left-1/2 -translate-x-1/2 z-50 items-center gap-8 bg-[#0b0b0f]/80 backdrop-blur-md border border-white/10 px-8 py-2.5 rounded-full text-sm text-[#a1a1aa]">
                 {links.map(({ href, label }) => (
                     <Link
@@ -29,7 +29,7 @@ const Navbar = () => {
                 ))}
             </nav>
 
-            {/* Mobile — bouton hamburger */}
+            {/* Mobile : bouton hamburger */}
             <button
                 onClick={() => setOpen(true)}
                 aria-label="Ouvrir le menu"
@@ -38,7 +38,7 @@ const Navbar = () => {
                 <Menu size={20} />
             </button>
 
-            {/* Mobile — overlay menu */}
+            {/* Mobile : overlay menu */}
             {open && (
                 <div className="fixed inset-0 z-50 md:hidden bg-[#0b0b0f]/96 backdrop-blur-sm flex flex-col">
                     <div className="flex justify-end p-4">
