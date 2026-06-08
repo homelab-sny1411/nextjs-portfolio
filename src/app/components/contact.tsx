@@ -4,49 +4,52 @@ import Footer from "@/app/components/footer";
 
 const Contact = () => {
     return (
-        <div id="contact" className="min-h-dvh bg-gray-800 flex flex-col justify-between">
-            {/* Contenu principal */}
-            <div className="flex-grow flex items-center justify-center">
-                <div className="w-full max-w-4xl h-auto lg:h-96 bg-gray-900 flex flex-col lg:flex-row rounded-lg shadow-lg overflow-hidden">
-                    {/* Section gauche: Logo */}
-                    <div className="w-full lg:w-1/2 flex items-center justify-center bg-gray-700">
-                        <Image
-                            src="/images/matteo-humez-logo.svg"
-                            alt="Logo avec initiales MH"
-                            width={160}
-                            height={160}
-                        />
+        <div id="contact" className="min-h-dvh bg-[#0f0f14] flex flex-col justify-between">
+            <div className="flex-grow flex items-center justify-center px-6 py-24">
+                <div className="max-w-4xl w-full grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+
+                    {/* Logo */}
+                    <div className="flex justify-center lg:justify-start">
+                        <div className="w-32 h-32 bg-[#1a1a24] rounded-2xl flex items-center justify-center">
+                            <Image
+                                src="/images/matteo-humez-logo.svg"
+                                alt="Initiales MH"
+                                width={72}
+                                height={72}
+                            />
+                        </div>
                     </div>
 
-                    <div className="w-full lg:w-1/2 p-8 text-white flex flex-col justify-center space-y-6">
-                        <h2 className="text-3xl font-bold">Me contacter</h2>
-                        <p className="text-lg">
-                            Vous pouvez me contacter via LinkedIn ou consulter mes projets sur GitHub.
+                    {/* Liens */}
+                    <div className="text-center lg:text-left">
+                        <h2 className="text-3xl font-bold text-white tracking-tight mb-3">Me contacter</h2>
+                        <p className="text-[#9ca3af] mb-8 leading-relaxed">
+                            Disponible sur LinkedIn ou consultable sur GitHub.
                         </p>
-                        <div className="flex items-center space-x-4">
+                        <div className="flex items-center justify-center lg:justify-start gap-6">
                             <a
                                 href="https://www.linkedin.com/in/matteohumez/"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center space-x-2 hover:text-blue-500 transition duration-300"
+                                className="flex items-center gap-2.5 text-[#9ca3af] hover:text-white transition-colors duration-200 text-sm font-medium"
                             >
-                                <FaLinkedin size={30} />
-                                <span>LinkedIn</span>
+                                <FaLinkedin size={18} />
+                                LinkedIn
                             </a>
                             <a
                                 href="https://github.com/sny1411"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center space-x-2 hover:text-gray-400 transition duration-300"
+                                className="flex items-center gap-2.5 text-[#9ca3af] hover:text-white transition-colors duration-200 text-sm font-medium"
                             >
-                                <FaGithub size={30} />
-                                <span>GitHub</span>
+                                <FaGithub size={18} />
+                                GitHub
                             </a>
                         </div>
                     </div>
+
                 </div>
             </div>
-
             <Footer />
         </div>
     );

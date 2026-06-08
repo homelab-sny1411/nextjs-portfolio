@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect} from 'react';
-import Image from "next/image";
-import {ChevronLeft, ChevronRight, X} from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { ChevronLeft, ChevronRight, X, Github } from 'lucide-react';
 
 interface Project {
     title: string;
@@ -10,6 +10,7 @@ interface Project {
     technologies: string[];
     descriptionHtml: string;
     year: string;
+    githubUrl?: string;
 }
 
 interface ModalProps {
@@ -22,19 +23,17 @@ interface ModalProps {
     hasPrev: boolean;
 }
 
-
-const Modal = ({isOpen, onClose, project, onNext, onPrev, hasNext, hasPrev}: ModalProps) => {
+const Modal = ({ isOpen, onClose, project, onNext, onPrev, hasNext, hasPrev }: ModalProps) => {
     const [touchStart, setTouchStart] = useState(0);
     const [touchEnd, setTouchEnd] = useState(0);
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (!isOpen) {return;}
-            if (e.key === 'ArrowLeft' && hasPrev) {onPrev();}
-            if (e.key === 'ArrowRight' && hasNext) {onNext();}
-            if (e.key === 'Escape') {onClose();}
+            if (!isOpen) { return; }
+            if (e.key === 'ArrowLeft' && hasPrev) { onPrev(); }
+            if (e.key === 'ArrowRight' && hasNext) { onNext(); }
+            if (e.key === 'Escape') { onClose(); }
         };
-
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [isOpen, hasNext, hasPrev, onNext, onPrev, onClose]);
@@ -42,51 +41,38 @@ const Modal = ({isOpen, onClose, project, onNext, onPrev, hasNext, hasPrev}: Mod
     const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
         setTouchStart(e.targetTouches[0].clientX);
     };
-
     const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
         setTouchEnd(e.targetTouches[0].clientX);
     };
-
     const handleTouchEnd = () => {
-        if (!touchStart || !touchEnd) {return;}
-
+        if (!touchStart || !touchEnd) { return; }
         const distance = touchStart - touchEnd;
-        const minSwipeDistance = 50;
-
-        if (distance > minSwipeDistance && hasNext) {
-            onNext();
-        }
-        if (distance < -minSwipeDistance && hasPrev) {
-            onPrev();
-        }
-
+        if (distance > 50 && hasNext) { onNext(); }
+        if (distance < -50 && hasPrev) { onPrev(); }
         setTouchStart(0);
         setTouchEnd(0);
     };
 
-    if (!isOpen || !project) {return null;}
+    if (!isOpen || !project) { return null; }
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90" onClick={onClose}>
             <div
-                className="relative w-full h-full md:h-auto md:max-w-3xl md:max-h-[85vh] bg-gray-800 md:rounded-lg overflow-hidden md:mx-4"
+                className="relative w-full h-full md:h-auto md:max-w-2xl md:max-h-[85vh] bg-[#111118] md:rounded-xl overflow-hidden md:mx-4 border border-white/8"
                 onClick={(e) => e.stopPropagation()}
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
             >
-                {/* Bouton fermer */}
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 z-10 p-2 bg-black/60 hover:bg-black/80 rounded-full text-white transition-colors md:bg-gray-900/50 md:hover:bg-gray-900/80"
+                    className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/70 rounded-full text-white transition-colors"
                 >
-                    <X size={24} />
+                    <X size={20} />
                 </button>
 
-                {/* Contenu scrollable */}
                 <div className="h-full overflow-y-auto">
-                    {/* Image */}
-                    <div className="relative w-full h-64 md:h-80">
+                    <div className="relative w-full h-56 md:h-72">
                         <Image
                             src={project.image}
                             alt={project.title}
@@ -94,86 +80,85 @@ const Modal = ({isOpen, onClose, project, onNext, onPrev, hasNext, hasPrev}: Mod
                             height={400}
                             className="w-full h-full object-cover"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 md:from-gray-800 via-transparent to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#111118] via-transparent to-transparent" />
                     </div>
 
-                    {/* Infos projet */}
                     <div className="p-6 pb-24 md:pb-6">
                         <div className="flex items-start justify-between mb-4">
-                            <h2 className="text-2xl md:text-3xl font-bold text-white">{project.title}</h2>
-                            <span className="text-sm text-gray-400 bg-gray-900 md:bg-gray-700 px-3 py-1 rounded-full ml-3 whitespace-nowrap">
-                                {project.year}
-                            </span>
+                            <h2 className="text-2xl font-bold text-white tracking-tight">{project.title}</h2>
+                            <div className="flex items-center gap-3 ml-3 shrink-0">
+                                {project.githubUrl && (
+                                    <a
+                                        href={project.githubUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-[#6b7280] hover:text-white transition-colors"
+                                        aria-label="Voir sur GitHub"
+                                    >
+                                        <Github size={18} />
+                                    </a>
+                                )}
+                                <span className="text-sm text-[#6b7280] bg-white/5 px-3 py-1 rounded-full whitespace-nowrap">
+                                    {project.year}
+                                </span>
+                            </div>
                         </div>
 
                         <div className="flex flex-wrap gap-2 mb-6">
                             {project.technologies.map((tech, i) => (
                                 <span
                                     key={i}
-                                    className="text-sm px-3 py-1 bg-blue-600 text-white rounded-full"
+                                    className="text-xs px-2.5 py-1 bg-accent/10 text-accent rounded-full border border-accent/20"
                                 >
                                     {tech}
                                 </span>
                             ))}
                         </div>
 
-                        <div className="text-gray-300 md:text-gray-200 prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: project.descriptionHtml }} />
+                        <div
+                            className="text-[#9ca3af] leading-relaxed prose prose-invert max-w-none prose-headings:hidden"
+                            dangerouslySetInnerHTML={{ __html: project.descriptionHtml }}
+                        />
                     </div>
                 </div>
 
-                {/* Navigation desktop - en bas */}
-                <div className="hidden md:flex items-center justify-between p-4 border-t border-gray-700 bg-gray-900/50">
+                {/* Navigation desktop */}
+                <div className="hidden md:flex items-center justify-between p-4 border-t border-white/8 bg-[#0f0f14]">
                     <button
                         onClick={onPrev}
                         disabled={!hasPrev}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
-                            hasPrev
-                                ? 'bg-gray-700 hover:bg-gray-600 text-white'
-                                : 'bg-gray-800 text-gray-500 cursor-not-allowed'
-                        }`}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-colors ${hasPrev ? 'text-white hover:bg-white/8' : 'text-[#374151] cursor-not-allowed'}`}
                     >
-                        <ChevronLeft size={20} />
-                        <span>Précédent</span>
-                    </button>
-                    <button
-                        onClick={onNext}
-                        disabled={!hasNext}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
-                            hasNext
-                                ? 'bg-gray-700 hover:bg-gray-600 text-white'
-                                : 'bg-gray-800 text-gray-500 cursor-not-allowed'
-                        }`}
-                    >
-                        <span>Suivant</span>
-                        <ChevronRight size={20} />
-                    </button>
-                </div>
-
-                {/* Navigation mobile - boutons en bas */}
-                <div className="md:hidden fixed bottom-0 left-0 right-0 flex items-center justify-between p-4 bg-gray-900 border-t border-gray-800">
-                    <button
-                        onClick={onPrev}
-                        disabled={!hasPrev}
-                        className={`flex items-center gap-2 px-4 py-2.5 rounded-lg transition-all ${
-                            hasPrev
-                                ? 'bg-gray-800 text-white'
-                                : 'bg-gray-800/50 text-gray-600'
-                        }`}
-                    >
-                        <ChevronLeft size={20} />
+                        <ChevronLeft size={16} />
                         Précédent
                     </button>
                     <button
                         onClick={onNext}
                         disabled={!hasNext}
-                        className={`flex items-center gap-2 px-4 py-2.5 rounded-lg transition-all ${
-                            hasNext
-                                ? 'bg-gray-800 text-white'
-                                : 'bg-gray-800/50 text-gray-600'
-                        }`}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm transition-colors ${hasNext ? 'text-white hover:bg-white/8' : 'text-[#374151] cursor-not-allowed'}`}
                     >
                         Suivant
-                        <ChevronRight size={20} />
+                        <ChevronRight size={16} />
+                    </button>
+                </div>
+
+                {/* Navigation mobile */}
+                <div className="md:hidden fixed bottom-0 left-0 right-0 flex items-center justify-between p-4 bg-[#0f0f14] border-t border-white/8">
+                    <button
+                        onClick={onPrev}
+                        disabled={!hasPrev}
+                        className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm transition-colors ${hasPrev ? 'text-white' : 'text-[#374151] cursor-not-allowed'}`}
+                    >
+                        <ChevronLeft size={16} />
+                        Précédent
+                    </button>
+                    <button
+                        onClick={onNext}
+                        disabled={!hasNext}
+                        className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm transition-colors ${hasNext ? 'text-white' : 'text-[#374151] cursor-not-allowed'}`}
+                    >
+                        Suivant
+                        <ChevronRight size={16} />
                     </button>
                 </div>
             </div>
@@ -187,122 +172,105 @@ const Projects = () => {
 
     const projects: Project[] = [
         {
-            title: 'Portfolio',
-            image: '/images/background.jpg',
-            technologies: ['React', 'Next.js', 'Tailwind CSS'],
-            descriptionHtml: `
-                <h2 class="text-2xl font-bold mb-4">Portfolio</h2>
-                <p class="text-justify">
-                    Actuellement, vous êtes en train de visiter ce projet ! <br>
-                    Il s'agit d'un site web réalisé avec <strong>React</strong> et <strong>Next.js</strong>.
-                    J'utilise également <strong>Tailwind CSS</strong> pour le design. 
-                    
-                    Ce projet a grandement évolué depuis sa création, initialement, je l'ai réalisé en Laravel (quelle erreur).
-                    Puis dans le cadre de mon cours d'écologie dans le numérique. J'ai décidé de le refaire en Next.js.
-                    Ceci a pour avantage de réduire radicalement le poids de la page (les images sont par exemple automatiquement compressé).
-                    Ce qui permet donc d'un côté de réduire l'empreinte carbone du site et de l'autre d'améliorer la vitesse de chargement.</p>
-            `,
-            year: '2024'
-        },
-        {
             title: 'SnyTools',
             image: '/images/projets/snytools.png',
             technologies: ['JavaScript', 'WebAssembly', 'Docker', 'PWA'],
             descriptionHtml: `
-                <h2 class="text-2xl font-bold mb-4">SnyTools</h2>
                 <p class="text-justify">
-                À un moment donné, j'en ai eu marre d'utiliser des sites web chelous pour fusionner des PDFs ou convertir des images. Du coup, j'ai décidé de créer mes propres outils.
+                    J'en avais marre d'utiliser des sites douteux pour fusionner des PDFs ou convertir des images.
+                    J'ai donc créé mes propres outils.
                 </p>
-                <p class="text-justify mt-2.5">
-                SnyTools, c'est une petite application web avec quelques outils pratiques. Pour l'instant, il y a un fusionneur de PDFs. Je suis en train de travailler sur un convertisseur d'images, un créateur de ZIP, et un convertisseur audio.
+                <p class="text-justify mt-3">
+                    SnyTools, c'est une application web avec des outils pratiques : un fusionneur de PDFs,
+                    un convertisseur d'images, et d'autres à venir. Tout fonctionne sur l'appareil :
+                    zéro upload, zéro données collectées.
                 </p>
-                <p class="text-justify mt-2.5">
-                L'important pour moi, c'était que tout fonctionne sur l'appareil de la personne. Zéro upload, zéro données collectées. Juste des outils qui font ce qu'on leur demande, c'est tout.
-                </p>
-                <p class="text-justify mt-2.5">
-                Techniquement, j'ai utilisé WebAssembly pour que ce soit rapide, un Service Worker pour que ça marche hors ligne, et j'ai déployé ça avec Docker. Rien de révolutionnaire, mais ça marche bien.
-                </p>
-                <p class="text-justify mt-2.5">
-                C'était cool à faire parce que j'ai vraiment exploré WebAssembly sérieusement, et j'ai appris pas mal de trucs sur les PWA.
+                <p class="text-justify mt-3">
+                    Techniquement : WebAssembly pour la performance, Service Worker pour le mode hors ligne,
+                    déployé avec Docker.
                 </p>
             `,
-            year: '2024'
+            year: '2026',
+        },
+        {
+            title: 'Portfolio',
+            image: '/images/background.jpg',
+            technologies: ['React', 'Next.js', 'Tailwind CSS'],
+            githubUrl: 'https://github.com/homelab-sny1411/nextjs-portfolio',
+            descriptionHtml: `
+                <p class="text-justify">
+                    Actuellement, vous êtes en train de visiter ce projet !
+                    Il s'agit d'un site web réalisé avec <strong>React</strong> et <strong>Next.js</strong>,
+                    stylé avec <strong>Tailwind CSS</strong>.
+                </p>
+                <p class="text-justify mt-3">
+                    Ce projet a grandement évolué depuis sa création : initialement en Laravel, puis refait en Next.js
+                    dans le cadre d'un cours sur l'écologie numérique. Les images sont automatiquement compressées,
+                    ce qui réduit l'empreinte carbone et améliore le temps de chargement.
+                </p>
+            `,
+            year: '2024',
         },
         {
             title: 'Bingo !',
             image: '/images/projets/bingo.png',
-            technologies: ['Java', 'Maven', 'Minecraft', 'PaperMc'],
+            technologies: ['Java', 'Maven', 'Minecraft', 'PaperMC'],
+            githubUrl: 'https://github.com/sny1411',
             descriptionHtml: `
-                <h2 class="text-2xl font-bold mb-4">Bingo !</h2>
-               <p class="text-justify">
-                    Bingo est un jeu de type "Bingo" pour Minecraft. Il a été réalisé en Java avec l'aide de l'API PaperMC.
-                    J'ai réalisé ce projet dans simplement pour m'amuser avec mes amis.
-                    Ce projet m'a permis de découvrir le développement de plugin pour Minecraft et de m'améliorer en Java.
-                    J'ai également appris à utiliser Maven pour gérer les dépendances de mon projet.
+                <p class="text-justify">
+                    Un plugin Minecraft de type Bingo réalisé en Java avec l'API PaperMC,
+                    pour jouer avec des amis.
                 </p>
-                <p class="text-justify mt-2.5">
-                    Vous pouvez retrouver le code source et plus de détails sur ce projet sur mon GitHub.
+                <p class="text-justify mt-3">
+                    Ce projet m'a permis de découvrir le développement de plugins Minecraft
+                    et de renforcer mes compétences en Java et Maven.
                 </p>
             `,
-            year: '2024'
+            year: '2024',
         },
         {
             title: 'Marathon du web',
             image: '/images/projets/marathon.jpg',
             technologies: ['HTML', 'CSS', 'PHP', 'Laravel'],
             descriptionHtml: `
-                <h2 class="text-2xl font-bold mb-4">Marathon du web</h2>
                 <p class="text-justify">
-                Ce projet est un événement organisé par l'IUT de Lens. Il consiste à développer un site web complet en 33 heures.</p>
-                
-                <p class="text-justify mt-2.5">
-                Pour cela, le département MMI (Métiers du Multimédia et de l'Internet) s'est joint à nous. Nous avons travaillé à quatre sur le backend et eux à cinq sur le frontend. C'était très intéressant, car dans leur formation, ils approfondissent davantage les notions de design, etc., tandis que nous avons plus de notions pour le backend. Nous étions donc complémentaires.
+                    Un événement organisé par l'IUT de Lens : développer un site web complet en 33 heures.
                 </p>
-                <p class="text-justify mt-2.5">
-                    Vous pouvez retrouver le code source et plus de détails sur ce projet sur mon GitHub.
+                <p class="text-justify mt-3">
+                    Travail en équipe avec des étudiants MMI pour le frontend et nous pour le backend.
+                    Une expérience complémentaire très enrichissante.
                 </p>
             `,
-            year: '2023'
+            year: '2023',
         },
         {
             title: 'Serveur Minecraft',
             image: '/images/projets/minecraft.jpg',
-            technologies: ['Java', 'Maven', 'Minecraft', 'PaperMc', 'MySQL'],
+            technologies: ['Java', 'Maven', 'Minecraft', 'PaperMC', 'MySQL'],
+            githubUrl: 'https://github.com/sny1411',
             descriptionHtml: `
-                <h2 class="text-2xl font-bold mb-4">Serveur Minecraft</h2>
                 <p class="text-justify">
-                Comme on peut le comprendre, j'aime Minecraft. Ce jeu permet de créer ce que l'on souhaite et donc de laisser son imagination décider de ce que l'on va faire.
-                </p>
-                <p class="text-justify mt-2.5">
-                Hors, après plusieurs années à jouer, parfois, on peut se sentir bloqué et dire "oh, ça serait super si telle chose était dans le jeu !". Eh bien, c'est ce que je fais de mon temps libre pour mes amis. Eux me donnent des idées, et moi, je les réalise.
-                </p>
-                <p class="text-justify mt-2.5">
-                Le meilleur exemple que je peux donner est celui d'un serveur que j'ai ouvert début 2023 pendant les vacances afin de faire profiter tous ceux qui avaient envie de jouer des ajouts que j'ai effectués.
-                </p>
-                <p class="text-justify mt-2.5">
-                Vous pouvez retrouver le code source et plus de détails sur ce projet sur mon GitHub. Il y a même une page de
-                wiki lié à ce projet écrit par un ami qui explique les ajouts !
+                    Des plugins Minecraft personnalisés développés pour mes amis : ils imaginent,
+                    je construis. Le meilleur exemple est un serveur ouvert début 2023, avec des ajouts
+                    documentés dans un wiki écrit par un ami.
                 </p>
             `,
-            year: '2023-2024'
+            year: '2023–2024',
         },
         {
             title: 'Plus ou moins',
             image: '/images/projets/plus-ou-moins.png',
             technologies: ['C++'],
             descriptionHtml: `
-                <h2 class="text-2xl font-bold mb-4">Plus ou moins</h2>
                 <p class="text-justify">
-                Ce projet est tout simplement une reprise du jeu du juste prix. On lance le programme, l'ordinateur choisi un nombre puis vous devez faire de la proposition pour essayer de deviner le nombre. L'ordinateur vous dit seulement si le nombre est plus grand ou plus petit.
-               </p>
-                <p class="text-justify mt-2.5">
-                Bien que ce projet soit simple, il me tient à cœur, car c'est mon tout premier projet. En effet, je l'ai réalisé lorsque j'étais en 6ᵉ donc en 2015
+                    Une reprise du jeu du juste prix : l'ordinateur choisit un nombre,
+                    vous proposez jusqu'à trouver.
                 </p>
-                <p class="text-justify mt-2.5">
-                Vous pouvez retrouver le code source et plus de détails sur ce projet sur mon GitHub (même si le code n'est vraiment pas très intéressant pour le coup).
-                </p>   
+                <p class="text-justify mt-3">
+                    Ce projet me tient à cœur : c'est mon tout premier projet, réalisé en 6ᵉ en 2015.
+                </p>
             `,
-            year: '2015'
+            year: '2015',
         },
     ];
 
@@ -324,16 +292,17 @@ const Projects = () => {
     };
 
     return (
-        <div id="portfolio" className="min-h-screen bg-gray-900 py-8 px-4">
-            <div className="max-w-6xl mx-auto">
-                <div className="space-y-6">
+        <div id="portfolio" className="min-h-screen bg-[#0b0b0f] py-24 px-6">
+            <div className="max-w-4xl mx-auto">
+                <h2 className="text-3xl font-bold text-white tracking-tight mb-12">Projets</h2>
+                <div className="space-y-3">
                     {projects.map((project, index) => (
                         <div
                             key={index}
-                            className="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-750 transition-colors"
+                            className="group bg-[#111118] border border-white/6 rounded-xl overflow-hidden hover:border-white/14 transition-colors duration-200"
                         >
                             <div className="md:flex">
-                                <div className="md:w-2/5 relative h-48 md:h-auto">
+                                <div className="md:w-2/5 relative h-44 md:h-auto shrink-0">
                                     <Image
                                         src={project.image}
                                         alt={project.title}
@@ -344,15 +313,29 @@ const Projects = () => {
                                 </div>
                                 <div className="p-5 md:w-3/5 flex flex-col justify-between">
                                     <div>
-                                        <div className="flex items-center justify-between mb-3">
-                                            <h3 className="text-xl md:text-2xl font-semibold text-white">{project.title}</h3>
-                                            <span className="text-sm text-gray-400 ml-3">{project.year}</span>
+                                        <div className="flex items-start justify-between mb-3">
+                                            <h3 className="text-lg font-semibold text-white tracking-tight">{project.title}</h3>
+                                            <div className="flex items-center gap-2.5 ml-3 shrink-0">
+                                                {project.githubUrl && (
+                                                    <a
+                                                        href={project.githubUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        onClick={(e) => e.stopPropagation()}
+                                                        className="text-[#6b7280] hover:text-white transition-colors"
+                                                        aria-label="Voir sur GitHub"
+                                                    >
+                                                        <Github size={16} />
+                                                    </a>
+                                                )}
+                                                <span className="text-xs text-[#6b7280]">{project.year}</span>
+                                            </div>
                                         </div>
-                                        <div className="flex flex-wrap gap-2 mb-4">
+                                        <div className="flex flex-wrap gap-1.5 mb-4">
                                             {project.technologies.map((tech, i) => (
                                                 <span
                                                     key={i}
-                                                    className="text-xs px-2 py-1 bg-gray-700 text-gray-300 rounded"
+                                                    className="text-xs px-2 py-0.5 bg-white/5 text-[#9ca3af] rounded"
                                                 >
                                                     {tech}
                                                 </span>
@@ -361,9 +344,9 @@ const Projects = () => {
                                     </div>
                                     <button
                                         onClick={() => openModal(index)}
-                                        className="text-blue-400 hover:text-blue-300 text-sm font-medium self-start"
+                                        className="text-sm text-accent hover:text-white transition-colors duration-200 self-start"
                                     >
-                                        En savoir plus →
+                                        En savoir plus
                                     </button>
                                 </div>
                             </div>
