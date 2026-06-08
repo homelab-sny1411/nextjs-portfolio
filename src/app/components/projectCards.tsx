@@ -172,25 +172,6 @@ const Projects = () => {
 
     const projects: Project[] = [
         {
-            title: 'Portfolio',
-            image: '/images/background.jpg',
-            technologies: ['React', 'Next.js', 'Tailwind CSS'],
-            githubUrl: 'https://github.com/homelab-sny1411/nextjs-portfolio',
-            descriptionHtml: `
-                <p class="text-justify">
-                    Actuellement, vous êtes en train de visiter ce projet !
-                    Il s'agit d'un site web réalisé avec <strong>React</strong> et <strong>Next.js</strong>,
-                    stylé avec <strong>Tailwind CSS</strong>.
-                </p>
-                <p class="text-justify mt-3">
-                    Ce projet a grandement évolué depuis sa création : initialement en Laravel, puis refait en Next.js
-                    dans le cadre d'un cours sur l'écologie numérique. Les images sont automatiquement compressées,
-                    ce qui réduit l'empreinte carbone et améliore le temps de chargement.
-                </p>
-            `,
-            year: '2024',
-        },
-        {
             title: 'SnyTools',
             image: '/images/projets/snytools.png',
             technologies: ['JavaScript', 'WebAssembly', 'Docker', 'PWA'],
@@ -210,6 +191,25 @@ const Projects = () => {
                 </p>
             `,
             year: '2026',
+        },
+        {
+            title: 'Portfolio',
+            image: '/images/background.jpg',
+            technologies: ['React', 'Next.js', 'Tailwind CSS'],
+            githubUrl: 'https://github.com/homelab-sny1411/nextjs-portfolio',
+            descriptionHtml: `
+                <p class="text-justify">
+                    Actuellement, vous êtes en train de visiter ce projet !
+                    Il s'agit d'un site web réalisé avec <strong>React</strong> et <strong>Next.js</strong>,
+                    stylé avec <strong>Tailwind CSS</strong>.
+                </p>
+                <p class="text-justify mt-3">
+                    Ce projet a grandement évolué depuis sa création : initialement en Laravel, puis refait en Next.js
+                    dans le cadre d'un cours sur l'écologie numérique. Les images sont automatiquement compressées,
+                    ce qui réduit l'empreinte carbone et améliore le temps de chargement.
+                </p>
+            `,
+            year: '2024',
         },
         {
             title: 'Bingo !',
